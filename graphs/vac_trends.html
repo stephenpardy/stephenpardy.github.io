@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link href="/bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+
+svg {
+  font: 10px sans-serif;
+}
+
+.line-quarter-on{
+    fill:none;
+    stroke-width: 2.5px;
+    stroke: black;
+}
+.line-quarter-off{
+  fill:none;
+  stroke-width: 1.5px;
+  stroke: gray;
+}
+
+.q-1{
+    fill:none;
+    stroke: #a6cee3;
+    stroke-width: 1.5px;
+}
+.q-2{
+    fill:none;
+    stroke: #1f78b4;
+    stroke-width: 1.5px;
+}
+.q-3{
+    fill:none;
+    stroke: #b2df8a;
+    stroke-width: 1.5px;
+}
+.q-4{
+    fill:none;
+    stroke: #33a02c;
+    stroke-width: 1.5px;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.brush .extent {
+  stroke: #fff;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+
+.d3-tip {
+  line-height: 1.5;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 0px;
+  text-align: center;
+}
+.legend rect {
+  fill:white;
+  stroke:black;
+  opacity:0.8;}
+
+</style>
+<body>
+  <div class="row">
+    <div class="col-md-4">
+      <div id='chartYearly'></div>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-4" id=>
+        <div id='chartQuarterly'></div>
+    </div>
+
+  </div>
+
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<script src="/resources/d3.legend.js"></script>
+<script>
+
+function brushended() {
+  if (!d3.event.sourceEvent) return; // only transition after input
+  var extent0 = brush.extent(),
+      extent1 = extent0.map(d3.time.year.round);
+
+  // if empty when rounded, use floor & ceil instead
+  if (extent1[0] >= extent1[1]) {
+    extent1[0] = d3.time.year.floor(extent0[0]);
+    extent1[1] = d3.time.year.ceil(extent0[1]);
+  }
+
+  d3.select(this).transition()
+      .call(brush.extent(extent1))
+      .call(brush.event);
+
+ d3.range(yearStart, yearEnd, 1).forEach(function(year, i){
+    quarterlyLines[i].attr("class", "line-quarter-off");
+ });
+
+ d3.range(brush.extent()[0].getFullYear(), brush.extent()[1].getFullYear(), 1).forEach(function(year, i){
+    j = year-yearStart;
+    quarterlyLines[j].attr("class", "line-quarter-on");
+ });
+
+};
+
+yearStart = 2003;
+yearEnd = 2015;
+
+var margin = {top: 10, right: 10, bottom: 60, left: 50},
+    width = 400 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+var parseDate = d3.time.format("%Y/%m").parse;
+
+var x = d3.time.scale().range([0, width]),
+    y = d3.scale.linear().range([height, 0]),
+    y2 = d3.scale.linear().range([height, 0]),
+    x2 = d3.scale.ordinal().rangePoints([0, width]).domain([1, 2, 3, 4]);
+
+var xAxis = d3.svg.axis().scale(x).orient("bottom"),
+    xAxis2 = d3.svg.axis().scale(x2).orient("bottom"),
+    yAxis = d3.svg.axis().scale(y).orient("left"),
+    yAxis2 = d3.svg.axis().scale(y2).orient("left");
+
+var yearlyLine = d3.svg.line()
+                   .x(function(d,i) { return x(d.date); })
+                   .y(function(d,i) { return y(d.rate); });
+
+var quarterlyLine = d3.svg.line()
+                   .x(function(d,i) { return x2(d.quarter); })
+                   .y(function(d,i) { return y2(d.rate); });
+
+var yearlySVG = d3.select("#chartYearly").append("svg")
+                  .attr("width", width + margin.left + margin.right)
+                  .attr("height", height + margin.top + margin.bottom);
+
+yearlySVG.append("defs")
+         .append("clipPath")
+         .attr("id", "clip")
+         .append("rect")
+         .attr("width", width)
+         .attr("height", height);
+
+var yearlyFocus = yearlySVG.append("g")
+                           .attr("class", "focus")
+                           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var quarterlySVG = d3.select("#chartQuarterly").append("svg")
+                  .attr("width", width + margin.left + margin.right)
+                  .attr("height", height + margin.top + margin.bottom);
+
+quarterlySVG.append("defs")
+            .append("clipPath")
+            .attr("id", "clip")
+            .append("rect")
+            .attr("width", width)
+            .attr("height", height);
+
+var quarterlyFocus = quarterlySVG.append("g")
+                                 .attr("class", "focus")
+                                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var yearName = quarterlyFocus.append("text")
+                   .text("Mouseover line to see year.")
+                   .attr("font-size", 15)
+                   .attr("fill", "black")
+                   .attr("stroke", "black")
+                   .attr("x", x2(2))
+                   .attr("y", y2(7.5));
+
+var brush = d3.svg.brush()
+              .x(x)
+              .on("brushend", brushended);
+
+var quarterNames = [1, 2, 3, 4];
+
+var vacancyData;
+var quarterlyLines = [];
+
+d3.csv("/resources/Vacancy_Rates_avg.csv", type, function(error, data) {
+    vacancyData = data;
+    x.domain(d3.extent(data.map(function(d) { return d.date; })));
+    y.domain([0, d3.max(data.map(function(d) { return d.rate; })) + 1]);
+    y2.domain([0, d3.max(data.map(function(d) { return d.rate; })) + 1]);
+
+    yearlyFocus.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+
+    yearlyFocus.append("text")             // text label for the x axis
+         .attr("transform",
+          "translate(" + (width/2) + " ," +
+                         (height+margin.bottom*(2/3.))+ ")")
+         .style("text-anchor", "middle")
+         .style("Font-size", "20px")
+         .text("Year");
+
+    yearlyFocus.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", (-margin.left))
+        .attr("x", (-height/2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .style("Font-size", "20px")
+        .text("Average Vacancy Rate");
+
+    yearlyFocus.append("g")
+               .attr("class", "x brush")
+               .call(brush)
+               .selectAll("rect")
+               .attr("y", -6)
+               .attr("height", height + 7);
+
+    quarterNames.forEach(function(quarter, i){
+      thisData = data.filter(function(d) { return d.quarter == quarter });
+      yearlyFocus.append("path")
+                 .datum(thisData)
+                 .attr("class", "q-"+quarter)
+                 .attr("d", yearlyLine)
+                 .attr("data-legend", function(d) {return "Q"+quarter});
+    });
+
+    legend = yearlyFocus.append("g")
+                .attr("class","legend")
+                .attr("transform","translate("+(width-margin.left)+","+margin.top+")")
+                .style("font-size","14px")
+                .call(d3.legend);
+
+    quarterlyFocus.append("g")
+                  .attr("class", "x axis")
+                  .attr("transform", "translate(0," + height + ")")
+                  .call(xAxis2);
+
+    quarterlyFocus.append("text")             // text label for the x axis
+                  .attr("transform",
+                   "translate(" + (width/2) + " ," +
+                                  (height+margin.bottom*(2/3.))+ ")")
+                  .style("text-anchor", "middle")
+                  .style("Font-size", "20px")
+                  .text("Quarter");
+
+    quarterlyFocus.append("g")
+                  .attr("class", "y axis")
+                  .call(yAxis2);
+
+    yearName.attr("x", x2(2))
+            .attr("y", y2(1));
+
+    d3.range(yearStart, yearEnd, 1).forEach(function(year, i){
+      var thisData = data.filter(function(d){ return d.date.getFullYear() == year});
+
+      quarterlyLines.push(quarterlyFocus.append("path")
+                 .datum(thisData)
+                 .attr("class", "line-quarter-on")
+                 .attr("d", quarterlyLine)
+                 .on("mouseover", function (d) {
+                    if (this.getAttribute("class") == 'line-quarter-on'){
+                      d3.select(this)
+                        .style("stroke-width", '4px');
+                    } else {
+                      d3.select(this)
+                        .style("stroke-width", '2.5px');
+                    };
+                    yearName.text(year);
+                    //console.log(this.style["stroke-width"])
+                    })
+                 .on("mouseout", function(d) {        //undo everything on the mouseout
+                    if (this.getAttribute("class") == 'line-quarter-on'){
+                      d3.select(this)
+                        .style("stroke-width", '2.5px');
+                    } else {
+                      d3.select(this)
+                        .style("stroke-width", '1.5px');
+                    };
+                    yearName.text("Mouseover line to see year.");
+                      }));
+    });
+
+});
+
+function type(d) {
+  d.date = parseDate(d['Date']);
+  d.rate = d['Rate'];
+  d.quarter = d['Quarter'];
+  return d;
+}
+
+</script>
+

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/d3.slider.css" />
+<style>
+
+.background {
+  fill: none;
+  pointer-events: all;
+}
+#zips {
+  stroke: #666;
+  fill: none;
+  fill-opacity: 0.6;
+  stroke-width: 1px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+ .wrapper {
+      display:block;
+      height:60px;
+      width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+}
+
+ .chart {
+      display:block;
+      height:600px;
+      width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+}
+
+.q0-10 { fill:rgb(171,171,171);}
+.q1-10 { fill:rgb(255,255,204); }
+.q2-10 { fill:rgb(255,237,160); }
+.q3-10 { fill:rgb(254,217,118); }
+.q4-10 { fill:rgb(254,178,76); }
+.q5-10 { fill:rgb(253,141,60); }
+.q6-10 { fill:rgb(252,78,42); }
+.q7-10 { fill:rgb(227,26,28); }
+.q8-10 { fill:rgb(189,0,38); }
+.q9-10 { fill:rgb(128,0,38); }
+.q10-10 { fill:#000; }
+
+.d3-tip {
+  line-height: 1.5;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 0px;
+  text-align: center;
+}
+</style>
+<body>
+<script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="//d3js.org/queue.v1.min.js"></script>
+<script src="//d3js.org/topojson.v1.min.js"></script>
+<script type="text/javascript" src="/resources/d3.slider.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+
+<div class="wrapper">
+  <div id="sliderYear"></div>
+</div>
+<div><svg width="200" height="50" id="DateText">
+    <text x="10" y="20"
+        style="font-family: Times New Roman;
+               font-size: 24;
+               stroke: black;
+               fill: black;">
+  </text>
+</svg></div>
+<div class="chart">
+  <div id="mapChart"></div>
+</div>
+<div class="wrapper">
+  <div class="title">Vacancy rate of multifamily dwellings.</div>
+  <div class="title">0% . . . . . . . . . . . . . . . . . . . . . . +12%</div>
+  <div id="map-legend"></div>
+</div>
+
+<script>
+
+var quantize = d3.scale.quantize()
+    .domain([-1, 12])
+    .range(d3.range(11).map(function(i) { return "q" + i + "-10"; }));
+
+
+var legend = d3.select("#map-legend")
+               .append("svg:svg")
+               .attr("width", 220)
+               .attr("height", 10);
+
+for (var i = 1; i < 11; i++) {
+  legend.append("svg:rect").
+  attr("x", i*20).
+  attr("height", 10).
+  attr("width", 20).
+  attr("class", "q" + i + "-10");//color
+};
+
+var width = 800,
+    height = 600;
+
+var margin = {
+    left:70,
+    right:30,
+    top:100,
+    bottom:40
+}
+
+var parseDate = d3.time.format("%Y/%m").parse;
+var getMonth = d3.time.format("%m")
+var getYear = d3.time.format("%Y")
+
+var svg = d3.select("#mapChart")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+var projection = d3.geo.transverseMercator()
+    .rotate([89 + 30 / 60, -40 - 50 / 60])
+    .scale(100*height)
+    .translate([width / 2, 4.5*height]);
+
+var path = d3.geo.path()
+             .projection(projection);
+
+var zoom = d3.behavior.zoom()
+             .translate(projection.translate())
+             .scale(projection.scale())
+             .scaleExtent([height, 500 * height])
+             .on("zoom", zoomed);
+
+var g = svg.append("g")
+           .call(zoom);
+
+g.append("rect")
+    .attr("class", "background")
+    .attr("width", width)
+    .attr("height", height);
+
+tip = d3.tip()
+        .attr('class', 'd3-tip')
+        .offset([-1, 0])
+        .direction('n')
+        .html(function(d) {
+          if (vacancy_data[_idx][d.properties.NAME] > 0){
+            return d.properties.NAME + "\n Vacancy Rate = " +
+                    vacancy_data[_idx][d.properties.NAME] + "%"
+          } else {
+            return d.properties.NAME + " Not enough data."
+          }
+ });
+
+svg.call(tip);
+
+queue()
+    .defer(d3.json, "/resources/zipcode.json")
+    .defer(d3.csv, "/resources/Vacancy_Rates.csv")
+    .await(ready);
+
+var vacancy_data;
+var zip_data;
+var _idx = 0;
+
+
+function ready(error, zip_outlines, vacancy_rates) {
+  if (error) return console.error(error);
+    vacancy_data = vacancy_rates;
+    zip_data = zip_outlines;
+
+    g.append("g")
+     .attr("id", "zips")
+     .selectAll("path")
+     .data(zip_data.features)
+     .enter().append("path")
+     .attr("class", function(d) { return quantize(vacancy_rates[_idx][d.properties.NAME]); })
+     .attr("d", path)
+     .on('mouseover',tip.show)
+     .on('mouseout', tip.hide);
+     date = parseDate(vacancy_data[_idx]['Date'])
+     quarter = getMonth(date)/4
+     dateString = "Quarter "+quarter+" "+getYear(date)
+     d3.select('#DateText').select("text").text(dateString);
+};
+
+function zoomed() {
+  projection.translate(d3.event.translate).scale(d3.event.scale);
+  g.selectAll("path").attr("d", path);
+};
+
+
+
+d3.select('#sliderYear').call(d3.slider().min(2003).max(2015).step(0.25).value(2003).axis(true).on("slide", function(evt, value) {
+    _idx = 4*(value-2003);
+
+    d3.selectAll("path")
+      .data(zip_data.features)
+      .attr("class", function(d) { return quantize(vacancy_data[_idx][d.properties.NAME]); })
+      .attr("d", path);
+
+    date = parseDate(vacancy_data[_idx]['Date'])
+    quarter = getMonth(date)/4
+    dateString = "Quarter "+quarter+" "+getYear(date)
+
+    d3.select('#DateText').select("text").text(dateString);
+}));
+
+</script>

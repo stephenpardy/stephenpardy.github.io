@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+svg {
+  font: 10px sans-serif;
+}
+
+.chart-line{
+    fill:none;
+    stroke: #000;
+    stroke-width: 1.5px;
+}
+
+.avg-line{
+    fill:none;
+    stroke: red;
+    stroke-width: 3px;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.brush .extent {
+  stroke: #fff;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+
+.d3-tip {
+  line-height: 1.5;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 0px;
+  text-align: center;
+}
+
+</style>
+<body>
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+
+<script>
+
+var margin = {top: 10, right: 10, bottom: 60, left: 50},
+    width = 600 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+var parseDate = d3.time.format("%Y/%m").parse;
+
+var x = d3.time.scale().range([0, width]),
+    y = d3.scale.linear().range([height, 0]);
+
+var xAxis = d3.svg.axis().scale(x).orient("bottom"),
+    yAxis = d3.svg.axis().scale(y).orient("left");
+
+var svg = d3.select("body").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom);
+
+svg.append("defs")
+   .append("clipPath")
+   .attr("id", "clip")
+   .append("rect")
+   .attr("width", width)
+   .attr("height", height);
+
+var focus = svg.append("g")
+               .attr("class", "focus")
+               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var info = focus.append("text")
+                .text("Mouse over a line to see zipcode.")
+                .attr("font-size", 15);
+
+var zipName = focus.append("text")
+                   .text("Average")
+                   .attr("font-size", 15)
+                   .attr("fill", "red")
+                   .attr("stroke", "red");
+
+// Only plot selected zipcodes
+var zipNames = ['53704', '53715', '53716', '53705', '53713', '53711', '53718']
+
+var avgVal = [];
+
+lineObjs1 = {};
+
+d3.csv("/resources/Vacancy_Rates.csv", type, function(error, data) {
+    //zipNames = d3.keys(data[0]).filter(function(d){ return d[0] == "5"});
+
+    // construct an average
+    data.forEach(function(elements, i){
+      _avg = 0
+      zipNames.forEach(function(name, j){
+            _avg += Number(elements[name])
+          });
+      _avg /= zipNames.length
+      avgVal.push({"val": _avg, "date": elements.date});
+    });
+
+    zipNames.forEach(function(name, i){
+        lineObjs1[name] = d3.svg.line()
+                           .x(function(d) { return x(d.date); })
+                           .y(function(d) { return y(d[name]); });
+    });
+
+    x.domain(d3.extent(data.map(function(d) { return d.date; })));
+    y.domain([0, 13]);
+
+    //Move the text to the proper position
+    zipName.attr("x", x(parseDate("2011/01")))
+           .attr("y", y(11));
+    info.attr("x", x(parseDate("2011/01")))
+        .attr("y", y(12));
+
+    focus.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+
+    focus.append("text")             // text label for the x axis
+         .attr("transform",
+          "translate(" + (width/2) + " ," +
+                         (height+margin.bottom*(2/3.))+ ")")
+         .style("text-anchor", "middle")
+         .style("Font-size", "20px")
+         .text("Year");
+
+    focus.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", (-margin.left))
+        .attr("x", (-height/2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .style("Font-size", "20px")
+        .text("Vacancy Rate");
+
+    avgLine = d3.svg.line()
+                    .x(function(d) { return x(d.date); })
+                    .y(function(d) { return y(d.val); });
+
+    avgPath = focus.append("path")
+                   .datum(avgVal)
+                   .attr("class", "avg-line")
+                   .attr("d", avgLine);
+
+    zipNames.forEach(function(name, i){
+        focus.append("path")
+             .datum(data)
+             .attr("class", "chart-line")
+             .attr("d", lineObjs1[name])
+             .on("mouseover", function (d) {
+                d3.select(this)         //on mouseover of each line, give it a nice thick stroke
+                  .style("stroke-width",'4px');
+                zipName.text(name)
+                       .attr("stroke", "black")
+                       .attr("fill", "black");
+                avgPath.style("stroke", "#8B5E5E");
+
+            })
+             .on("mouseout", function(d) {        //undo everything on the mouseout
+                d3.select(this)
+                  .style("stroke-width",'1.5px');
+                  zipName.text("Average")
+                         .attr("stroke", "red")
+                         .attr("fill", "red");
+                  avgPath.style("stroke", "red");
+        });
+
+    });
+
+});
+
+
+function type(d) {
+  d.date = parseDate(d['Date']);
+
+  return d;
+}
+
+</script>
+
