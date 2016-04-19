@@ -1,8 +1,25 @@
 ---
 layout: default
-title: Stephen Pardy
+title: Data Thoughts
 ---
-<div class="blurb">
-    Can't think of much to say at this point!
-</div><!-- /.blurb -->
 
+<h1>{{ page.title }}</h1>
+
+Random and interesting (to me) data science projects, visualizations, and random musings.
+
+<ul class="posts">
+
+  {% for post in site.posts %}
+    <li>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-4">
+                <img src="{{ post.thumbnail }}" alt="{{ post.title }}"/>
+            </div>
+            <div class="col-md-4">
+                <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a><br>{{ post.date | date_to_string }}
+            </div>
+        </div>
+    </li>
+  {% endfor %}
+</ul>
