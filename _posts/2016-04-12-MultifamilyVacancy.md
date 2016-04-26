@@ -1,9 +1,10 @@
 ---
 layout: post
 title: "Madison Area Multifamily Vacancy"
-date: 2016-03-12
-thumbnail: /images/2016-03-12_thumbnail.png
+date: 2016-04-12
+thumbnail: /images/2016-04-12_thumbnail.png
 ---
+
 I've been interested in all the new apartment construction in Madison over the past few years. One explanation I keep hearing is that the vacancy rate of apartments is much lower than the target of 5%. All data in this post is from <a href="https://www.mge.com/customer-service/multifamily/vacancy-rates/">MG&E</a>. <small> Caveat: This dataset contained some zipcodes with very few apartments. The vacancy rates measured in these zipcodes varied wildly and did not reflect market forces. Because of this, all zipcodes with fewer than 20 apartments have been removed from this analysis. </small>
 
 First I looked at the general trend of vacancy rates over the past few years.

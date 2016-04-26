@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+ .wrapper {
+      display:block;
+      height:60px;
+      width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+}
+.day {
+  fill: #fff;
+  stroke: #ccc;
+}
+
+.month {
+  fill: none;
+  stroke: #000;
+  stroke-width: 2px;
+}
+
+.RdYlGn .q0-11{fill:rgb(165,0,38)}
+.RdYlGn .q1-11{fill:rgb(215,48,39)}
+.RdYlGn .q2-11{fill:rgb(244,109,67)}
+.RdYlGn .q3-11{fill:rgb(253,174,97)}
+.RdYlGn .q4-11{fill:rgb(254,224,139)}
+.RdYlGn .q5-11{fill:rgb(255,255,191)}
+.RdYlGn .q6-11{fill:rgb(217,239,139)}
+.RdYlGn .q7-11{fill:rgb(166,217,106)}
+.RdYlGn .q8-11{fill:rgb(102,189,99)}
+.RdYlGn .q9-11{fill:rgb(26,152,80)}
+.RdYlGn .q10-11{fill:rgb(0,104,55)}
+
+/* hover info */
+#tooltip {
+  background-color: #fff;
+  border: 2px solid #ccc;
+  padding: 10px;
+}
+
+</style>
+<body>
+<div id="calendar"></div>
+
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
+
+var names = ['Events', 'Births', 'Deaths', 'Holidays'];
+
+var width = 960,
+    height = 136,
+    cellSize = 16,
+    margin = cellSize*2.5;
+
+
+var format = d3.time.format("%Y-%m-%d");
+
+var colorContainer = {};
+names.forEach(function(n, i){
+  colorContainer[n] =  d3.scale.quantize()
+                            .range(d3.range(11).map(function(d) { return "q" + d + "-11"; }));
+});
+
+var svg = d3.select("#calendar").selectAll("svg").append("svg")
+    .attr("width", width+margin)
+    .attr("height", height+(3*margin))
+    .attr("class", "RdYlGn")
+    .append("g")
+    .attr("transform", "translate(" + ((width - cellSize * 53) / 2 - margin) + "," + (height - cellSize * 7 - 1 + 3*margin) + ")");
+
+svg.append("text")
+    .attr("transform", "translate("+(width)/2 + ", " + -(5*cellSize) + ")")
+    .style("text-anchor", "middle")
+    .text(function(d) { return "Number of " + d + " per day."});
+
+var _min = 10;
+var _max = 100;
+
+svg.append("text")
+    .attr("class", "legend")
+    .attr("transform", "translate("+((width)/2 - 20*6.5) + ", " + -(3*cellSize) + ")");
+    .text(_min.toFixed(0) +
+                       " . . . . . . . . . . . . . . . . . . . . . . . . . . " +
+                       _max.toFixed(0));
+
+var legend = svg.append("g")
+    .attr("class", "map-legend")
+    .attr("transform", "translate("+((width)/2 - 20*7 ) + ", " + -(2*cellSize) + ")")
+    .attr("width", 220)
+    .attr("height", 10);
+
+for (var i = 1; i < 12; i++) {
+  legend.append("svg:rect")
+        .attr("x", i*20)
+        .attr("height", 10)
+        .attr("width", 20)
+        .attr("class", "q" + i + "-11");//color
+};
+
+    _legend = svg.select("."+name+"legend")
+                 .text(_min.toFixed(0) +
+                       " . . . . . . . . . . . . . . . . . . . . . . . . . . " +
+                       _max.toFixed(0));
+
+</script>
