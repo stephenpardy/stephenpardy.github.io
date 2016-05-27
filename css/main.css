@@ -123,3 +123,4 @@ ul.posts {
 ul.posts li {
     list-style: none;
 }
+.top-buffer { margin-top:20px; }
