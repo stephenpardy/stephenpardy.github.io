@@ -1,0 +1,80 @@
+---
+layout: default
+title: Totally Accurate Horoscope
+---
+
+<div class="row">
+    <div class="col-sm-4 col-sm-offset-4">
+    <h2> Aquarius</h2>
+    <span id="Aquarius"></span>
+    </div>
+
+    <div class="col-sm-4 col-sm-offset-4">
+    <h2> Pisces</h2>
+    <span id="Pisces"></span>
+    </div>
+
+    <div class="col-sm-4 col-sm-offset-4">
+    <h2> Aries</h2>
+    <span id="Aries"></span>
+    </div>
+
+    <div class="col-sm-4 col-sm-offset-4">
+    <h2> Taurus</h2>
+    <span id="Taurus"></span>
+    </div>
+
+    <div class="col-sm-4 col-sm-offset-4">
+    <h2> Gemini</h2>
+    <span id="Gemini"></span>
+    </div>
+
+    <div class="col-sm-4 col-sm-offset-4">
+    <h2> Cancer</h2>
+    <span id="Cancer"></span>
+    </div> 
+
+    <div class="col-sm-4 col-sm-offset-4">
+    <h2> Leo</h2>
+    <span id="Leo"></span>
+    </div>
+
+    <div class="col-sm-4 col-sm-offset-4">
+    <h2> Virgo</h2>
+    <span id="Virgo"></span>
+    </div> 
+
+    <div class="col-sm-4 col-sm-offset-4">
+    <h2> Libra</h2>
+    <span id="Libra"></span>
+    </div>
+
+    <div class="col-sm-4 col-sm-offset-4">
+    <h2> Scorpio</h2>
+    <span id="Scorpio"></span>
+    </div>
+
+    <div class="col-sm-4 col-sm-offset-4">
+    <h2> Sagittarius</h2>
+    <span id="Sagittarius"></span>
+    </div>
+
+    <div class="col-sm-4 col-sm-offset-4">
+    <h2> Capricorn</h2>
+    <span id="Capricorn"></span>
+    </div>
+
+</div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript">
+
+        $.getJSON("http://www.astro.wisc.edu/~spardy/astrology.json", function(json) {
+            for (key in json) {
+                document.getElementById(key).textContent=json[key];
+            }
+        });
+
+
+    </script>
+
+
