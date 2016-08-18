@@ -124,3 +124,5 @@ ul.posts li {
     list-style: none;
 }
 .top-buffer { margin-top:20px; }
+
+.bottom-buffer { margin-bottom:50px; }
