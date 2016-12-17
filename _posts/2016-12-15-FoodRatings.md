@@ -11,7 +11,7 @@ While eating at a restaurant one night, my girlfriend and I wondered whether the
 
 Although they look fairly similar across all categories, a few stood out to me. To check which categories where truly different, I used the two-side [Kolmogorov-Smirnov test](https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test) to determine if the category has a significantly different distribution than all the other restaurants. Because I am doing so many different tests, there is a high likelihood that some will happen to look significant just due to chance. To correct for this, I use the [Bonferroni correction](https://en.wikipedia.org/wiki/Bonferroni_correction). The p-value that I was looking for was 0.00125. Three categories appeared different given this strict p-value requirement: Food Trucks, Fast Food, and Sports Bars.
 
-![Distribution of Ratings](/images/ratings/relative_ratings.jpeg)
+![Distribution of Ratings](/images/ratings/Relative_Ratings.jpeg)
 
 Fast food restaurants have a relatively flat distribution with mostly ower and middle ratings, sports bars are highly peaked around 3 stars, and people in Madison seem to love food trucks. What about Asian food? Restaurants in the category 'Asian' have an average rating of 3.4, exactly the same as the average rating of restaurants in the category 'American.' You can see the two distributions below, and although they may appear somewhat different, this difference is not significant according to a 2-sample KS test.
 
