@@ -1,47 +1,114 @@
-Gates & Brovi
-Graft
-S2pizzabar
-Fresco
-Fiesta 38
-Hamilton's On The Square
-Hardee's
-Alchemy
-RP Adler's
-Bon Appetit Cafe
-Jacs Dining and Tap House
-Underground Kitchen
-The Weary Traveler Freehouse
-Dayton Street Grille
-43 North
-La Brioche True Food
-Talula
-La Taguara
-Heritage Tavern
-Old Market Bistro
-The Sett
-Dairyland Family Restaurant
-Tropical Cuisine
-Sardine
-Jovian Taphaus
-El Rincon Tico
-OSS Madison
-Parkway Family Restaurant
-Bonfyre American Grille
-Inka Heritage
-Graze
-Fit 2 Eat
-Sol Azteca Fusion Grill
-Logan's Madtown
-L'Etoile
-Vasilis' Take Five: Vittles & Vices
-JD's
-A Pig In a Fur Coat
-Silver Mine Subs
-Forequarter
-Veritas Bistro & Lounge
-Oliver's Public House
-Cafe Costa Rica
-Salvatore's Tomato Pies
-Kennedy Manor Dining Room & Bar
-wiener shop
-A La Brasa
+Laredo's
+Burger King
+Burger King
+Pedro's Mexican Restaurante
+Habanero's Mexican Grill
+Los Gemelos
+Laredo's
+McDonald's
+Wendy's
+Taco Bell
+Fuzzy's Taco Shop
+People's Bakery
+Mexico Lindo
+KFC
+KFC
+Francisco's Mexican Cantina
+Wendy's
+Jamerica Food Cart
+KFC
+Chipotle Mexican Grill
+Banzo
+MacTaggarts Market
+Happy Grill Mexican Restaurant
+Pasqual's
+Melly Mell's
+Casa de Lara
+Cuco's Mexican Restaurant
+McDonald's
+Taco Bell
+Taqueria Sabor Queretano
+Saz
+Blowin' Smoke BBQ Food Cart
+Frida
+Diego's Mexican Bistro
+King of Falafel and Grill
+Habanero's Mexican Grill
+Las Islas Del Mar
+El Poblano Mexican Restaurant
+Panchero's Mexican Grill
+Humble
+Kakilima Food Cart
+Burger King
+Zizo Cafe
+Lakeview Bakery and Deli
+Qdoba Mexican Grill
+Luang Prabang
+Seafood Center
+Taco Bell
+Jalapeo Mexican Grill
+Lane's Bakery & Coffee
+McDonald's
+Bubbles' Doubles
+Taqueria El Jalapeo
+Get Some Burritos
+Chipotle Mexican Grill
+Laredo's
+Taco Bell
+Taco Bell
+El Burrito Loco Restaurant
+Wendy's
+Gyro Express
+McDonald's
+Pots N Tots
+Atlanta Bread Company
+The Silly Yak Bakery & Bread Barn
+Wendy's
+The Taco Bros
+Arby's
+La Bamba
+Taco Bell
+El Sabor de Puebla
+Pedro's Mexican Restaurante
+El Grito Taqueria
+El Rancho Mexican Grill
+Pasqual's Cantina
+Noosh
+Qdoba
+The Taco Shop
+Relish Deli & Market
+La Hacienda
+Tex Tubb's Taco Palace
+El Pastor
+El Pescador
+El Burrito Loco
+Pasqual's
+Tex Tubb's Taco Palace
+Chipotle Mexican Grill
+Antojitos el Toril
+Lovshack
+La Mestiza
+Library Mall
+La Guanajuatence
+University Square Food Court
+Ingrid's Lunch Box
+Naty's Fast Food
+Taqueria Guadalajara
+Jin's Chicken and Fish
+Doug's Soul Food Cafe
+Qdoba Mexican Grill
+Chick-fil-A
+La Baguette
+Ladonia Cafe
+Dandelion Food Cart
+Qdoba Mexican Grill
+Cancun
+Las Cazuelas
+Burrito Drive
+McDonald's
+Tienda Los Gemelos
+La Mestiza
+Fiesta Cancun
+El Bolillo Bakery
+Cilantro
+Panchero's Mexican Grill
