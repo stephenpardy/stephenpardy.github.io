@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link href="/bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.dot {
+  stroke: #000;
+}
+.label {
+  font-size: 12px;
+}
+
+.tooltip {
+  position: absolute;
+  width: 100px;
+  height: 50px;
+  pointer-events: none;
+  background-color: #F0F0F0;
+  opacity: 0.7;
+}
+
+
+</style>
+
+<body>
+  <div class="row">
+    <div class="col-md-4">
+      <div id='chart1BR'></div>
+    </div>
+    <div class="col-md-4" id=>
+        <div id='chart2BR'></div>
+    </div>
+
+  </div>
+
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script src="/resources/d3.tip.v0.6.3.js"></script>
+
+<script>
+
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = 500 - margin.left - margin.right,
+    height = 300 - margin.top - margin.bottom;
+
+var x = d3.scale.linear()
+    .range([0, width]);
+
+var y1BR = d3.scale.linear()
+    .range([height, 0]);
+
+var y2BR = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis1BR = d3.svg.axis()
+    .scale(y1BR)
+    .orient("left");
+
+var yAxis2BR = d3.svg.axis()
+    .scale(y2BR)
+    .orient("left");
+
+var svg1BR = d3.select("#chart1BR").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var svg2BR = d3.select("#chart2BR").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var tooltip1BR = d3.select("#chart1BR").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+var tooltip2BR = d3.select("#chart2BR").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+d3.csv("../resources/rent_gdp.csv", function(error, data) {
+  if (error) throw error;
+
+  data.forEach(function(d) {
+    d.Name = d.Name;
+    d.Rent1BR = +d.Rent1BR;
+    d.Rent2BR = +d.Rent2BR;
+    d.GDP = +d.GDP;
+  });
+
+  x.domain(d3.extent(data, function(d) { return d.GDP; })).nice();
+  y1BR.domain([-2, 11]);
+
+  y2BR.domain(d3.extent(data, function(d) { return d.Rent2BR; })).nice();
+
+  svg1BR.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("x", width)
+      .attr("y", -6)
+      .style("text-anchor", "end")
+      .text("GDP increase");
+
+  svg1BR.append("g")
+      .attr("class", "y axis")
+      .call(yAxis1BR)
+    .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Rent Increase (1 bedroom)")
+
+  svg1BR.selectAll(".dot")
+      .data(data)
+    .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", 3.5)
+      .attr("cx", function(d) { return x(d.GDP); })
+      .attr("cy", function(d) { return y1BR(d.Rent1BR); })
+      .on("mouseover", function(d) {
+          tooltip1BR.transition()
+               .duration(200)
+               .style("opacity", .9);
+          tooltip1BR.html(d.Name + '<br/>' +
+                          'GDP increase: ' + d3.format("0.1f")(d.GDP) + '%<br/>' +
+                          'Rent Increase: ' + d3.format("0.1f")(d.Rent1BR) + "%")
+               .style("left", (d3.select(this).attr("cx")) + "px")
+               .style("top", (d3.select(this).attr("cy") - 5) + "px");
+      })
+      .on("mouseout", function(d) {
+          tooltip1BR.transition()
+               .duration(500)
+               .style("opacity", 0);
+      });
+
+  svg2BR.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("x", width)
+      .attr("y", -6)
+      .style("text-anchor", "end")
+      .text("GDP increase");
+
+  svg2BR.append("g")
+      .attr("class", "y axis")
+      .call(yAxis2BR)
+    .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Rent Increase (2 bedroom)")
+
+  svg2BR.selectAll(".dot")
+      .data(data)
+    .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", 3.5)
+      .attr("cx", function(d) { return x(d.GDP); })
+      .attr("cy", function(d) { return y2BR(d.Rent2BR); })
+      .on("mouseover", function(d) {
+          tooltip2BR.transition()
+               .duration(200)
+               .style("opacity", .9);
+          tooltip2BR.html(d.Name + '<br/>' +
+                          'GDP increase: ' + d3.format("0.1f")(d.GDP) + '%<br/>' +
+                          'Rent Increase: ' + d3.format("0.1f")(d.Rent2BR) + "%")
+               .style("left", (d3.select(this).attr("cx")) + "px")
+               .style("top", (d3.select(this).attr("cy") - 10) + "px");
+      })
+      .on("mouseout", function(d) {
+          tooltip2BR.transition()
+               .duration(500)
+               .style("opacity", 0);
+      });
+
+    var trendData1BR = [[-2.38659091746, 0.829677803387, 7.95340946957, 4.51953081146]];
+    var trendData2BR = [[-2.38659091746, 0.011265013317, 7.95340946957, 3.78779156359]];
+
+    var trendline1BR = svg1BR.selectAll(".trendline")
+                       .data(trendData1BR);
+
+    var trendline2BR = svg2BR.selectAll(".trendline")
+                       .data(trendData2BR);
+    trendline1BR.enter()
+      .append("line")
+      .attr("class", "trendline")
+      .attr("x1", function(d) { return x(d[0]); })
+      .attr("y1", function(d) { return y1BR(d[1]); })
+      .attr("x2", function(d) { return x(d[2]); })
+      .attr("y2", function(d) { return y1BR(d[3]); })
+      .attr("stroke", "black")
+      .attr("stroke-width", 2);
+
+    trendline2BR.enter()
+      .append("line")
+      .attr("class", "trendline")
+      .attr("x1", function(d) { return x(d[0]); })
+      .attr("y1", function(d) { return y2BR(d[1]); })
+      .attr("x2", function(d) { return x(d[2]); })
+      .attr("y2", function(d) { return y2BR(d[3]); })
+      .attr("stroke", "black")
+      .attr("stroke-width", 2);
+
+});
+
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+
+</body>

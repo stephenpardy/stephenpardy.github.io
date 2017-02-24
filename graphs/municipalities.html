@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/d3.slider.css" />
+<style>
+
+.background {
+  fill: none;
+  pointer-events: all;
+}
+#munis {
+  stroke: #666;
+  fill: none;
+  fill-opacity: 0.6;
+  stroke-width: 1px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+ .wrapper {
+      display:block;
+      height:60px;
+      width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+}
+
+ .chart {
+      display:block;
+      height:600px;
+      width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+}
+
+.q0-10 { fill:rgb(171,171,171);}
+.q1-10 { fill:rgb(255,255,204); }
+.q2-10 { fill:rgb(255,237,160); }
+.q3-10 { fill:rgb(254,217,118); }
+.q4-10 { fill:rgb(254,178,76); }
+.q5-10 { fill:rgb(253,141,60); }
+.q6-10 { fill:rgb(252,78,42); }
+.q7-10 { fill:rgb(227,26,28); }
+.q8-10 { fill:rgb(189,0,38); }
+.q9-10 { fill:rgb(128,0,38); }
+.q10-10 { fill:#000; }
+
+.d3-tip {
+  line-height: 1.5;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 0px;
+  text-align: center;
+}
+</style>
+<body>
+<script src="//d3js.org/d3.v4.min.js" charset="utf-8"></script>
+<script src="//d3js.org/queue.v1.min.js"></script>
+<script src="//d3js.org/topojson.v2.min.js"></script>
+<script type="text/javascript" src="/resources/d3.slider.js"></script>
+<script src="/resources/d3.tip.v0.6.3.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+
+<div class="wrapper">
+  <div id="sliderYear"></div>
+</div>
+<div><svg width="200" height="50" id="DateText">
+    <text x="10" y="20"
+        style="font-family: Times New Roman;
+               font-size: 24;
+               stroke: black;
+               fill: black;">
+  </text>
+</svg></div>
+<div class="chart">
+  <div id="mapChart"></div>
+</div>
+
+<script>
+
+
+var width = 800,
+    height = 600;
+
+var margin = {
+    left:70,
+    right:30,
+    top:100,
+    bottom:40
+}
+
+var rates = d3.map();
+
+
+var color = d3.scaleThreshold()
+    .domain(d3.range(-2, 1))
+    .range([d3.interpolateBrBG(0),
+            d3.interpolateBrBG(0.2),
+            d3.interpolateBrBG(0.4),
+            d3.interpolateBrBG(0.6),
+            d3.interpolateBrBG(0.8),
+            d3.interpolateBrBG(1.0)]);
+
+
+var svg = d3.select("#mapChart")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+var projection = d3.geoMercator();
+    projection
+      .scale(3900)
+      .center([-88.5, 44.5]);
+
+var path = d3.geoPath()
+             .projection(projection);
+
+var zoom = d3.zoom()
+             //.translate(projection.translate())
+             //.scale(projection.scale())
+             //.scaleExtent([height, 500 * height])
+             .on("zoom", zoomed);
+
+var g = svg.append("g")
+           .call(zoom);
+
+g.append("rect")
+    .attr("class", "background")
+    .attr("width", width)
+    .attr("height", height);
+
+queue()
+    .defer(d3.json, "/resources/wisc_boundaries_topo2.json")
+    .defer(d3.csv, "/resources/wisc_muni_rates.csv", function(d) { rates.set(d.Name, +d.Change); })
+    .await(ready);
+
+var vacancy_data;
+var zip_data;
+var _idx = 0;
+
+
+function ready(error, muni) {
+  if (error) return console.error(error);
+
+    g.append("g")
+     .attr("id", "munis")
+     .selectAll("path")
+     .data(topojson.feature(muni, muni.objects.Wisconsin_Municipal_Boundaries).features)
+     .enter().append("path")
+     .attr("fill", function(d) {console.log(d.change = rates.get(d.properties.MCD_NAME)); return color(d.change = rates.get(d.properties.MCD_NAME)); })
+     .attr("d", path);
+};
+
+function zoomed() {
+  //console.log(d3.event.transform);
+  projection//.translate([d3.event.transform.x, d3.event.transform.y])
+            .scale(projection.scale()+d3.event.transform.k*10);
+  g.selectAll("path").attr("d", path);
+};
+
+
+
+</script>

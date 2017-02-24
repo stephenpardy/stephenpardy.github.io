@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link href="/bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.dot {
+  stroke: #000;
+}
+.label {
+  font-size: 12px;
+}
+
+.tooltip {
+  position: absolute;
+  width: 100px;
+  height: 50px;
+  pointer-events: none;
+  background-color: #F0F0F0;
+  opacity: 0.7;
+}
+
+.trendline {
+  color: black;
+  stroke-width: 2;
+}
+
+.unityline {
+  color: red;
+  stroke-width: 2;
+}
+.legend rect {
+  fill:white;
+  stroke:black;
+  opacity:0.8;}
+
+</style>
+
+<body>
+
+  <div id='chart'></div>
+
+
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script src="/resources/d3.tip.v0.6.3.js"></script>
+<script src="/resources/d3.legend.js"></script>
+
+<script>
+
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = 500 - margin.left - margin.right,
+    height = 300 - margin.top - margin.bottom;
+
+var x = d3.scale.linear()
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var svg = d3.select("#chart").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var tooltip = d3.select("#chart").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+d3.csv("../resources/rent_gdp.csv", function(error, data) {
+  if (error) throw error;
+
+  data.forEach(function(d) {
+    d.Name = d.Name;
+    d.Rent1BR = +d.Rent1BR;
+    d.Rent2BR = +d.Rent2BR;
+    d.GDP = +d.GDP;
+  });
+
+  x.domain(d3.extent(data, function(d) { return d.Rent1BR; })).nice();
+  y.domain(d3.extent(data, function(d) { return d.Rent2BR; })).nice();
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("x", width)
+      .attr("y", -6)
+      .style("text-anchor", "end")
+      .text("Rent Increase (1 bedroom)");
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Rent Increase (2 bedroom)")
+
+  svg.selectAll(".dot")
+      .data(data)
+    .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", 3.5)
+      .attr("cx", function(d) { return x(d.Rent1BR); })
+      .attr("cy", function(d) { return y(d.Rent2BR); })
+      .on("mouseover", function(d) {
+          tooltip.transition()
+               .duration(200)
+               .style("opacity", .9);
+          tooltip.html(d.Name + '<br/>' +
+                          'Rent increase (1 BR): ' + d3.format("0.1f")(d.Rent1BR) + '%<br/>' +
+                          'Rent Increase (2 BR): ' + d3.format("0.1f")(d.Rent2BR) + "%")
+               .style("left", (d3.select(this).attr("cx")) + "px")
+               .style("top", (d3.select(this).attr("cy") - 5) + "px");
+      })
+      .on("mouseout", function(d) {
+          tooltip.transition()
+               .duration(500)
+               .style("opacity", 0);
+      });
+
+    var trendData = [[-2.38659091746, 0.011265013317, 7.95340946957, 3.78779156359]];
+
+    var trendline = svg.selectAll(".trendline")
+                       .data(trendData);
+
+    trendline.enter()
+      .append("line")
+      .attr("class", "trendline")
+      .attr("x1", function(d) { return x(d[0]); })
+      .attr("y1", function(d) { return y(d[1]); })
+      .attr("x2", function(d) { return x(d[2]); })
+      .attr("y2", function(d) { return y(d[3]); })
+      .attr("data-legend",function(d) { return "trendline"})
+      .attr("data-legend-color", "black")
+      .attr("stroke", "black")
+      .attr("stroke-width", 1);
+
+    var unityData = [[0.0, 0.0, 10, 10]];
+
+    var unityline = svg.selectAll(".unityline")
+                       .data(unityData);
+
+    unityline.enter()
+      .append("line")
+      .attr("class", "unityline")
+      .attr("x1", function(d) { return x(d[0]); })
+      .attr("y1", function(d) { return y(d[1]); })
+      .attr("x2", function(d) { return x(d[2]); })
+      .attr("y2", function(d) { return y(d[3]); })
+      .attr("data-legend",function(d) { return "Unity"})
+      .attr("data-legend-color", "red")
+      .attr("stroke", "red")
+      .attr("stroke-width", 1);
+
+    legend = svg.append("g")
+      .attr("class","legend")
+      .attr("transform","translate(50,30)")
+      .style("font-size","12px")
+      .call(d3.legend)
+
+});
+
+</script>
+
+</body>
