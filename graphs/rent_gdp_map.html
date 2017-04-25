@@ -114,7 +114,7 @@ function ready(error, states, data) {
             return projection([+d.lon, +d.lat])[1];
         })
         .attr("r", function(d) {
-            return Math.abs(d.GDP/max['GDP'] * 5);
+            return Math.abs(d.GDP/max['GDP'] * 10);
         })
             .style("fill", function(d){
                 if (d.GDP < 0) {
@@ -149,7 +149,7 @@ function update(key){
     svg.selectAll("circle")
         .transition(t)
         .attr("r", function(d) {
-            return Math.abs(d[key]/max[key] * 5);
+            return Math.abs(d[key]/max[key] * 10);
         })
             .style("fill", function(d){
                 if (d[key] < 0) {
