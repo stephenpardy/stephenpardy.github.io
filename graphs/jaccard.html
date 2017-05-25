@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Jaccard Similarity</title> <!-- adapted from http://javadude.wordpress.com/2012/05/17/d3-js-with-dynamic-data/ -->
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.2/d3.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <style>
+        body {font-family: monospace; line-height: 160%; font-size: 18px; }
+        ul {list-style: none; margin: 0; padding: 0;}
+        li {display: inline-block; min-width: 80px; padding: 10px; background-color: #eee; margin: 0;}
+        input {border: 1px dotted #ccc; background: white; font-family: monospace; padding: 10px 20px; font-size: 18px; margin: 20px 10px 20px 0; color: red;}
+        input:focus { background-color:yellow; outline: none;}
+    </style>
+</head>
+<link href="/bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet">
+
+<body>
+
+
+
+<div class="row">
+    <div class="col-md-3 col-md-offset-1">
+        <div id='setA'>
+            <form name="input1" onSubmit="return handleClickA()">
+                <input name="Submit"  type="submit" value="Add to set A" >
+                <input type="text" id="input1" placeholder="Add to set A&hellip;">
+            </form>
+            <ul></ul>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class='row'>
+            <div class='col-xs-12'>
+                <div id='intersection'>
+                    <h4>Intersection: </h4><ul></ul>
+                </div>
+            </div>
+        </div>
+        <div class='row'>
+            <div class='col-xs-12'>
+                <div id='union'>
+                    <h4>Union: </h4><ul></ul>
+                </div>
+            </div>
+        </div>
+        <div class='row'>
+            <div class="col-xs-12">
+                <h4>Jaccard Similarity: <span id='jaccardSim'></span></h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-md-offset-1">
+        <div id='setB'>
+            <form name="input2" onSubmit="return handleClickB()">
+                <input name="Submit"  type="submit" value="Add to set B" >
+                <input type="text" id="input2" placeholder="Add to set B&hellip;">
+            </form>
+            <ul></ul>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+    function union(setA, setB) {
+        var union_ = new d3.set(setA.values());
+        for (var elem of setB.values()) {
+            union_.add(elem);
+        }
+        return union_;
+    }
+
+    function intersection(setA, setB){
+        var intersection_ = new d3.set();
+        for (var elem of setB.values()) {
+            if (setA.has(elem)) {
+                intersection_.add(elem);
+            }
+        }
+        return intersection_;
+    }
+
+    var setA = new d3.set();
+    var setB = new d3.set();
+
+    function handleClickA(event){
+        val = document.getElementById("input1").value;
+        setA.add(val);
+        drawA();
+        drawJaccard();
+        return false;
+    }
+
+    function drawA(){
+        var pA = d3.select("#setA").select("ul").selectAll("li")
+                   .data(setA.values(), function(d){ return d; });
+
+        pA.enter()
+          .append("li")
+          .text(function(d, i){return d;})
+          .append('button')
+          .attr("type", "button")
+          .attr("class", "close")
+          .attr("aria-label", "Close")
+          .append("span")
+          .attr('aria-hidden', true)
+          .html('&times;')
+          .on('click', function(d) { setA.remove(d); drawA(); drawJaccard();});
+
+        pA.exit().remove();
+
+    }
+
+    function handleClickB(event){
+        val = document.getElementById("input2").value;
+        setB.add(val);
+        drawB();
+        drawJaccard();
+        return false;
+    }
+
+    function drawB(){
+
+        console.log(setB.values())
+        var pB = d3.select("#setB").select("ul").selectAll("li")
+                   .data(setB.values(), function(d){ return d; });
+
+        pB.enter()
+          .append("li")
+          .text(function(d, i){return d;})
+          .append('button')
+          .attr("type", "button")
+          .attr("class", "close")
+          .attr("aria-label", "Close")
+          .append("span")
+          .attr('aria-hidden', true)
+          .html('&times;')
+          .on('click', function(d) { setB.remove(d); drawB(); drawJaccard();});
+
+        pB.exit().remove();
+
+    }
+
+    function drawJaccard(){
+        union_ = union(setA, setB);
+
+        var pU = d3.select("#union").select("ul").selectAll("li")
+                   .data(union_.values(), function(d){ return d});
+
+        pU.enter()
+          .append('li')
+          .text(function(d, i){return d;});
+
+        pU.exit().remove();
+
+        intersection_ = intersection(setA, setB);
+
+        var pI = d3.select("#intersection").select("ul").selectAll("li")
+                   .data(intersection_.values(), function(d){ return d});
+
+        pI.enter()
+          .append('li')
+          .text(function(d, i){return d;});
+
+        pI.exit().remove();
+
+        var jaccardSim = intersection_.size()/union_.size();
+
+        document.getElementById("jaccardSim").textContent = jaccardSim;
+
+    }
+
+</script>
+<script src="/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+
+
+</body>
+</html>
