@@ -1,8 +1,8 @@
 ---
 layout: post
 title: "Jaccard Similarity"
-date: 2017-05-22
-thumbnail: /images/2017-05-22_thumbnail.png
+date: 2017-05-23
+thumbnail: /images/2017-05-23_thumbnail.png
 ---
 
 
