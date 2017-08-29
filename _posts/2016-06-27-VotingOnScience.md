@@ -20,7 +20,7 @@ If we look at the distributions of votes and citations, we can see that the vast
 
 ![Very weak correlation between votes and citations](/images/voxcharta/votes_citations.jpeg)
 
-There does appear to be a very weak correlation between the votes and citations, but not nearly as strong as I initially suspected. It is likely that people are voting for papers for different reasons than they are citing them. It is also possible that papers that sounds appealing at first end up being duds, or that seemingly uninteresting papers end up making significant contributions.  
+There does appear to be a very weak correlation between the votes and citations, but not nearly as strong as I initially suspected. It is likely that people are voting for papers for different reasons than they are citing them. It is also possible that papers that sounds appealing at first end up being duds, or that seemingly uninteresting papers end up making significant contributions.
 
 Next I wanted to check some confounding factors.
 
