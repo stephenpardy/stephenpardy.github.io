@@ -1,0 +1,506 @@
+---
+layout: post
+title: "AAS Job Trends"
+date: 2017-09-03
+thumbnail: /images/2017-09-03_thumbnail.png
+---
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link href="/bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style> /* set the CSS */
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 2px;
+  opacity: 0.7;
+}
+.label {
+  font-size: 12px;
+  color: black;
+}
+.selected {
+  stroke-width: 3px;
+  opacity: 1;
+}
+
+.hidden {
+  stroke-width: 0px;
+}
+
+.dot {
+ fill: #91bfdb;
+}
+
+.lrgdot {
+  fill: #fc8d59;
+}
+
+.lrgdotForeign {
+  fill: #4286f4;
+}
+
+#graph{
+  float: left;
+  position: absolute;
+  margin-left: 40px;
+  top: 70px;
+}
+
+
+.graph-scroll-fixed #graph{
+  position: fixed;
+}
+
+.sec{
+  min-height: 400px;
+}
+
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 100px;
+    height: 20px;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: white;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+@media (max-width: 350px){
+  .content{
+    display: none;
+  }
+}
+
+</style>
+<body>
+<div class='container'>
+
+  <div class="row">
+    <div class="col-sm-4 col-sm-offset-1">
+      <h2>Astronomy Job Trends</h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4 col-sm-offset-1">
+      <h4>A look at the trend in astronomy jobs over the past decade, and a visual exploration of my data analysis thought process.</h4>
+    </div>
+  </div>
+</div>
+<div id="container" class="container-1 content">
+  <div class="row">
+    <div class="col-xs-9 col-sm-8 col-md-7 col-lg-6">
+      <div id="graph"></div>
+    </div>
+    <div class="col-xs-3 col-sm-4 col-md-5 col-lg-6">
+
+      <div id="sections">
+
+      <div class='sec'></div>
+
+        <div class='sec'>
+
+        <p><h3>Monthly job trends.</h3>
+        I scraped every job listing from the <a href="https://jobregister.aas.org/jobs/current">AAS Job Register</a> (note: after scraping, the AAS removed all old archives from their site) since 2003. Because the jobs are stored on pages by their month, I naturally looked at the number of jobs posted per month over time. Two things jumped out at me. The first is that the monthly data seem to show an increase over time, but more importantly that there was huge variation within each year. I thought I would check out the yearly cycle first to see if I could explain the scatter.</p>
+
+        </div>
+
+
+        <div class='sec'>
+
+        <p><h3>The yearly job cycle.</h3> Since these are all academic jobs, there is a definite trend that follows the American School year. The majority of jobs are posted in September through December, and the rest of the year is mostly flat.</p>
+
+        </div>
+
+
+        <div class='sec'>
+
+        <p><h3>Yearly average</h3> Now lets look at the average for each year. Here we can see that there is a definite upward trend over the years. This trend is even easier to see if we clear away the monthly points and look only at the yearly totals.</p>
+
+        </div>
+
+        <div class='sec'>
+
+        <p><h3>Yearly total</h3> This trend is easier to see if we look at the total jobs each year instead of the average. 527 jobs where posted in 2003, which rose stedily to a height of 891 in 2008. You can see the effect of the recession on the number of jobs posted, which fell to 1289 by 2011. In 2016 1027 jobs were posted, finally recovering from the job losses during the recession.</p>
+
+        </div>
+
+        <div class='sec'>
+
+        <p><h3>By country</h3> Hold up though. The AAS is an US based organization yet many jobs are posted from outside the US. Does this have any affect on the job trends? Turns out it does. Jobs <span style='color: #4286f4'>outside the US</span> have been steadily rising, while jobs <span style='color: #fc8d59'>inside the US</span> showed a more pronounced dip after the recession. I can imagine two reasons for this. First, the recession might have hit US science and educaton spending harder than other countries. Second, the AAS job postings may be only recently gaining in popularity for institutions located outside the US. The data turn out to not be great for this analysis, see below for some difficulties.</p>
+
+        </div>
+
+      </div>
+
+
+    </div>
+  </div> <!-- row -->
+
+
+</div>
+
+<div class='container content'>
+  <div class='row'>
+    <div class='col-sm-8'>
+        <p>I wanted to map the locations of all the jobs posted to the AAS job register. One difficulty I faced is that the job locations are listed manually and have large variability (for instance two jobs may be listed for "University of Wisconsin-Madison" and "UW-Madison" which are the same place). Instead of reaching for more complicated natural language solutions, or manually managed the data, I used google maps API to deal with duplicated names. For each entry, I queried the maps and recorded the locations. Locations within 2 km where considered to be the same institute.</p>
+    </div>
+  </div>
+    <div class="row">
+    <div class="col-sm-8">
+      <h2>Location of academic jobs</h2>
+      <p>Hover over a point for more information.</p>
+    </div>
+  </div>
+</div>
+
+
+<div id='container' class='container-2 content'>
+  <div class="row">
+    <div class="col-sm-8 col-sm-offset-2">
+      <div id="map">
+      <iframe src="/graphs/world_map.html" marginwidth="0"
+        marginheight="0" scrolling="no" width=100% height=100% frameBorder="0"></iframe>
+      </div>
+
+    </div>
+
+    <div class="col-sm-2">
+      <div id="sections">
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="/resources/graph-scroll.js"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<script>
+
+var t = d3.transition()
+    .duration(500)
+    .ease(d3.easeLinear);
+
+var margin = {top: 10, right: 20, bottom: 60, left: 50},
+    width = 600 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+var x = d3.scaleTime().range([0, width]),
+    y = d3.scaleLinear().range([height, 0]);
+
+var svg = d3.select("#graph").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// Append Div for tooltip to SVG
+var div = d3.select("#graph")
+            .append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+var _data = null;
+var _data2 = null;
+var _done = false;
+
+d3.csv("/resources/AASJobTrendMonthly.csv", function(error, data) {
+  if (error) throw error;
+  d3.csv("/resources/AASJobTrendYearly.csv", function(error2, data2) {
+    if (error2) throw error2;
+
+    data.forEach(function(d) {
+      d.Total = +d.Total;
+      d.date_month = new Date(2000, +d.Month, 1);
+      d.date = new Date(+d.Year, +d.Month, 1);
+    });
+
+    data2.forEach(function(d) {
+      d.Total = +d.Total;
+      d.Avg = +d.Avg;
+      d.date = new Date(+d.Year, 1, 1);
+      d.US = +d.US;
+      d.Foreign = +d.NonUS;
+    });
+
+    _data = data;
+    _data2 = data2;
+
+    y.domain([0, d3.max(data, function(d) { return d.Total; })]);
+
+    // Add the X Axis
+    svg.append("g")
+        .attr("class", "xaxis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x)
+                .tickFormat(d3.timeFormat("%Y")));
+
+    // Add the Y Axis
+    svg.append("g")
+        .attr("class", "yaxis")
+        .call(d3.axisLeft(y));
+    svg.append("text")
+        .attr("id", 'ylabel')
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left)
+        .attr("x",0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Jobs per month");
+
+    dispYear();
+
+    _done = true;
+
+
+  });
+});
+
+function dispAvg(){
+
+  svg.selectAll(".lrgdot")
+      .data(_data2)
+    .enter().append("circle")
+      .attr("class", "lrgdot")
+      .attr("r", 4)
+      .attr("cx", function(d) { return x(d.date); })
+      .attr("cy", function(d) { return y(d.Avg); })
+      .on("mouseover", function(d) {
+          div.transition()
+             .duration(200)
+             .style("opacity", .9);
+             div.html(d3.timeFormat("%Y")(d.date) + ":\n" + d.Avg + " Jobs.")
+             .style("left", x(d.date) + "px")
+             .style("top", (y(d.Avg) - 25) + "px");
+      })
+      // fade out tooltip on mouse out
+      .on("mouseout", function(d) {
+          div.transition()
+             .duration(500)
+             .style("opacity", 0);
+      });
+
+  svg.selectAll(".lrgdot")
+      .on("mouseover", function(d) {
+          div.transition()
+             .duration(200)
+             .style("opacity", .9);
+             div.html(d3.timeFormat("%Y")(d.date) + ":\n" + d.Avg + " Jobs.")
+             .style("left", x(d.date) + "px")
+             .style("top", (y(d.Avg) - 25) + "px")
+      })
+      .transition(t).attr("cy", function(d) { return y(d.Avg); });
+
+  svg.selectAll('.lrgdotForeign').transition(t).remove();
+
+}
+
+function dispByCountry(){
+
+  y.domain([0, d3.max(_data2, function(d) { return d.US; })]);
+
+  svg.select(".yaxis")
+        .call(d3.axisLeft(y));
+
+  yearBins = svg.selectAll(".lrgdot");
+
+  yearBins.data(_data2)
+      .enter().append("circle")
+      .attr("class", "lrgdot")
+      .attr("r", 4)
+      .attr("cy", function(d) { return y(d.US)})
+      .attr("cx", function(d) { return x(d.date); })
+      .on("mouseover", function(d) {
+          div.transition()
+             .duration(200)
+             .style("opacity", .9);
+             div.html(d3.timeFormat("%Y")(d.date) + ":\n" + d.US + " Jobs.")
+             .style("left", x(d.date) + "px")
+             .style("top", (y(d.US) - 50) + "px");
+      })
+      // fade out tooltip on mouse out
+      .on("mouseout", function(d) {
+          div.transition()
+             .duration(500)
+             .style("opacity", 0);
+      });
+
+  yearBins
+      .on("mouseover", function(d) {
+          div.transition()
+             .duration(200)
+             .style("opacity", .9);
+             div.html(d3.timeFormat("%Y")(d.date) + ":\n" + d.US + " Jobs in the US.")
+             .style("left", x(d.date) + "px")
+             .style("top", (y(d.US) - 25) + "px");
+      })
+      .transition(t)
+      .attr("cy", function(d) { return y(d.US)});
+
+
+  svg.selectAll(".lrgdotForeign")
+      .data(_data2)
+    .enter().append("circle")
+      .attr("class", "lrgdotForeign")
+      .attr("r", 4)
+      .attr("cx", function(d) { return x(d.date); })
+      .attr("cy", function(d) { return y(d.Foreign); })
+      .on("mouseover", function(d) {
+          div.transition()
+             .duration(200)
+             .style("opacity", .9);
+             div.html(d3.timeFormat("%Y")(d.date) + ":\n" + d.Foreign + " Jobs outside the US.")
+             .style("left", x(d.date) + "px")
+             .style("top", (y(d.Foreign) - 25) + "px");
+      })
+      // fade out tooltip on mouse out
+      .on("mouseout", function(d) {
+          div.transition()
+             .duration(500)
+             .style("opacity", 0);
+      });
+
+
+}
+
+function dispTot(){
+
+  svg.select('#ylabel').text("Jobs per year");
+
+  svg.selectAll('.dot')
+     .transition(t)
+     .style('opacity', 0);
+
+  y.domain([0, d3.max(_data2, function(d) { return d.Total; })]);
+  svg.select(".yaxis")
+        .call(d3.axisLeft(y));
+
+  yearBins = svg.selectAll(".lrgdot");
+
+  yearBins.data(_data2)
+      .enter().append("circle")
+      .attr("class", "lrgdot")
+      .attr("r", 4)
+      .attr("cy", function(d) { return y(d.Total)})
+      .attr("cx", function(d) { return x(d.date); })
+      .on("mouseover", function(d) {
+          div.transition()
+             .duration(200)
+             .style("opacity", .9);
+             div.html(d3.timeFormat("%Y")(d.date) + ":\n" + d.Total + " Jobs.")
+             .style("left", x(d.date) + "px")
+             .style("top", (y(d.Total) - 50) + "px");
+      })
+      // fade out tooltip on mouse out
+      .on("mouseout", function(d) {
+          div.transition()
+             .duration(500)
+             .style("opacity", 0);
+      });
+
+  yearBins
+      .on("mouseover", function(d) {
+          div.transition()
+             .duration(200)
+             .style("opacity", .9);
+             div.html(d3.timeFormat("%Y")(d.date) + ":\n" + d.Total + " Jobs.")
+             .style("left", x(d.date) + "px")
+             .style("top", (y(d.Total) - 50) + "px");
+      })
+      .transition(t)
+      .attr("cy", function(d) { return y(d.Total)});
+
+  svg.selectAll('.lrgdotForeign').transition(t).remove();
+
+}
+
+
+function dispMonth(){
+
+  svg.select('#ylabel').text("Jobs per month");
+
+  x.domain(d3.extent(_data, function(d) { return d.date_month; }));
+
+  svg.selectAll(".dot")
+      .data(_data)
+    .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", 3.5)
+      .attr("cx", function(d) { return x(d.date); })
+      .attr("cy", function(d) { return y(d.Total); })
+
+  svg.select(".xaxis").transition(t).call(d3.axisBottom(x)
+              .tickFormat(d3.timeFormat("%B")));
+
+  svg.selectAll(".dot").transition(t)
+      .attr("cx", function(d) { return x(d.date_month); });
+
+  svg.selectAll('.lrgdotForeign').transition(t).remove();
+  svg.selectAll('.lrgdot').transition(t).remove();
+}
+
+function dispYear(){
+
+  svg.select('#ylabel').text("Jobs per month");
+
+  x.domain(d3.extent(_data, function(d) { return d.date; }));
+  y.domain([0, d3.max(_data, function(d) { return d.Total; })]);
+
+  svg.select(".yaxis")
+        .call(d3.axisLeft(y));
+
+  svg.selectAll(".dot")
+      .data(_data)
+    .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", 3.5)
+      .attr("cx", function(d) { return x(d.date); })
+      .attr("cy", function(d) { return y(d.Total); });
+
+
+  svg.select(".xaxis").transition(t).call(d3.axisBottom(x)
+              .tickFormat(d3.timeFormat("%Y")));
+
+  svg.selectAll(".dot").transition(t)
+      .attr("cx", function(d) { return x(d.date); })
+      .transition(t)
+      .style('opacity', 1);
+
+  svg.selectAll('.lrgdotForeign').transition(t).remove();
+  svg.selectAll('.lrgdot').transition(t).remove();
+
+}
+
+triggers = {0: function (){}, 1: dispYear, 2: dispMonth,
+            3: function () {dispYear(); dispAvg();}, 4: dispTot,
+            5: dispByCountry}
+
+var gs = d3.graphScroll()
+    .container(d3.select('.container-1'))
+    .graph(d3.selectAll('.container-1 #graph'))
+    .sections(d3.selectAll('.container-1 #sections > div'))
+    .on('active', function(i){
+      if (_done){
+          console.log(i);
+          triggers[i]();
+      }
+      //d3.selectAll('path').style("stroke-opacity", 1-(i-1)/5.);
+    });
+
+var gs2 = d3.graphScroll()
+    .container(d3.select('.container-2'))
+    .graph(d3.selectAll(".container-2 #map"))
+    .sections(d3.selectAll(".container-2 #sections > div"));
+
+
+</script>
+<script src="/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+</body>
