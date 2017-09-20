@@ -1,8 +1,8 @@
 ---
 layout: post
 title: "Senators and Term Limits"
-date: 2017-09-13
-thumbnail: /images/2017-09-13_thumbnail.png
+date: 2017-09-20
+thumbnail: /images/2017-09-20_thumbnail.png
 ---
 
 The United States senate is getting older. Don't believe me? Check out this graph of the average age of each Senate over the entire history of the United States.
@@ -23,6 +23,7 @@ If we remove all of the Senators serving more than two terms, we still see a lar
 
 ![Senators serving more terms](/images/senate/avg_age_senate_compare.jpeg)
 
-To know for sure, we should look at a natural experiment where two neighboring states have instituted different term limits.
-Nevertheless, there may be many good reasons to institute Senate term limits beyond lowering the average age of Senators.
+Even if terms limits do nothing to change the age of congress people, there may be many good reasons to institute Senate term limits beyond lowering the average age of Senators. One example of this type of change is in Arkansas, where by at least [one analysis](http://www.arkansaspolicyfoundation.org/ARKANSASTERMLIMITS.htm), fewer lawyers are in the assembly after their term limits went into affect.
+To know for sure what effects term limits have, we should look at a natural experiment - for instance two neighboring states that instituted different term limits. More on this in a future post.
+
 
