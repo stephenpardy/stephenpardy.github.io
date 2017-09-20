@@ -23,7 +23,8 @@ If we remove all of the Senators serving more than two terms, we still see a lar
 
 ![Senators serving more terms](/images/senate/avg_age_senate_compare.jpeg)
 
-Even if terms limits do nothing to change the age of congress people, there may be many good reasons to institute Senate term limits beyond lowering the average age of Senators. One example of this type of change is in Arkansas, where by at least [one analysis](http://www.arkansaspolicyfoundation.org/ARKANSASTERMLIMITS.htm), fewer lawyers are in the assembly after their term limits went into affect.
+Even if terms limits do nothing to change the age of congress people, there may be many good reasons to institute Senate term limits beyond lowering the average age of Senators. One example of this type of change is in Arkansas, where by at least [one analysis](http://www.arkansaspolicyfoundation.org/ARKANSASTERMLIMITS.htm), fewer lawyers are in the assembly after their term limits went into affect. Beyond that, term limits simply mean more turnover in the legislature. Again, it is not clear if this is a good or bad thing and there are arguments on both sides. Freshman congress people may be more easily influenced or may be inexperienced, while congress people that have served for many terms may be entrenched and not represent their constitutents.
+
 To know for sure what effects term limits have, we should look at a natural experiment - for instance two neighboring states that instituted different term limits. More on this in a future post.
 
 
