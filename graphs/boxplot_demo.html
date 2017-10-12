@@ -38,6 +38,10 @@ body {
 }
 
 
+.d3-slider .slider-off{
+  background-color: #C5C5C5;
+}
+
 .axis path,
 .axis line {
   fill: none;
@@ -53,7 +57,20 @@ body {
   <p>Boxplots are useful visualization tools for see the average and spread of data. The box shows the interquartile range (middle 50% of the data) and the median is marked as the center line. The whiskers show the outer edge of the distribution (although the definitions vary). Here we are showing 1.5 times the interquartile range. Any outliers beyond that are shown individually.</p>
   <p>Although boxplots are great in their simplicity, they hide the details of the inner distribution of the data. In the demonstration below, you may change the mean and spread of the data, and the number of samples. See how the boxplot responds. Then, move any datapoints by clicking and dragging.</p>
 
+  <p>There are particular pathological cases that have the same boxplot, but very different distributions. You can see more about this <a href="https://www.autodeskresearch.com/publications/samestats">here</a>.</p>
+
   <p>See also: <a href="http://johnburnmurdoch.github.io/cityddj/anscombe">Anscombe</a> </p>
+
+    <div class="row">
+      <div class="col-md-8">
+      <button type = "button" class = "btn btn-secondary"
+        onclick="setupNormal()">Normal</button>
+      <button type = "button" class = "btn btn-secondary"
+        onclick="setupPathological()">Pathological</button>
+      <button type = "button" class = "btn btn-secondary"
+        onclick="setupUser()">User defined</button>
+      </div>
+    </div>
 
     <div class="row">
       <div class="col-md-8">
@@ -114,7 +131,7 @@ var chart = d3.box()
 var N = 10;
 
 var mu = 0;
-var sigma = 0.5;
+var sigma = 1;
 
 d3.select('#muSpan').text(mu.toFixed(1));
 d3.select('#sigmaSpan').text(sigma.toFixed(1));
@@ -163,18 +180,9 @@ function dragged(d) {
 
 function setup(){
 
-  data = [];
+  data  = [[]];
 
-  for (i=0; i<N; i++){
-    data.push(newRand());
-  };
-
-  data = [data];
-
-  min = d3.min(data[0]);
-  max = d3.max(data[0]);
-
-  chart.domain([-7, 7]);
+  chart.domain([-10, 10]);
 
   viz = d3.select("#graph1").selectAll("svg").data(data)
     .enter().append("svg")
@@ -185,17 +193,37 @@ function setup(){
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
       .call(chart);
 
- //
 
-  y.domain([-7, 7]);
+  y.domain([-10, 10]);
 
   svg.append("g")
       .attr("class", "y axis")
       .call(yAxis);
 
-  svg.selectAll(".dot")
-      .data(data[0])
-    .enter().append("circle")
+
+}
+
+function setupUser(){
+
+  data = [];
+
+  for (i=0; i<N; i++){
+    data.push(newRand());
+  };
+
+  data = [data];
+
+  viz.data(data).call(chart.duration(1000));
+
+  dots = svg.selectAll(".dot").data(data[0]);
+
+  dots.exit().remove();
+
+  dots.transition()
+      .attr("cy", function(d) { return y(d); });
+
+  dots.enter()
+    .append("circle")
       .attr("class", "dot")
       .attr('opacity', 0.5)
       .attr("r", 3.5)
@@ -203,9 +231,80 @@ function setup(){
       .attr("cy", function(d) { return y(d); })
       .call(drag);
 
-};
+}
+
+
+function setupNormal(){
+
+  d3.text("../resources/BoxPlots_normal.csv", function(error, data) {
+    if (error) throw error;
+
+    var data = d3.csv.parseRows(data).map(function(row) {
+      return row.map(function(value) {
+        return +value;
+      });
+    });
+
+    data = [data];
+
+    viz.data(data).call(chart.duration(1000));
+
+    dots = svg.selectAll(".dot").data(data[0]);
+
+    dots.exit().remove();
+
+    dots.transition()
+        .attr("cy", function(d) { return y(d); });
+
+    dots.enter()
+      .append("circle")
+        .attr("class", "dot")
+        .attr('opacity', 0.5)
+        .attr("r", 3.5)
+        .attr("cx", function(d) { return randX(); })
+        .attr("cy", function(d) { return y(d); })
+        .call(drag);
+
+  });
+}
+
+function setupPathological(){
+
+  d3.text("../resources/BoxPlots_left.csv", function(error, data) {
+    if (error) throw error;
+
+    var data = d3.csv.parseRows(data).map(function(row) {
+      return row.map(function(value) {
+        return +value;
+      });
+    });
+
+
+    data = [data];
+
+    viz.data(data).call(chart.duration(1000));
+
+    dots = svg.selectAll(".dot").data(data[0]);
+
+    dots.exit().remove();
+
+    dots.transition()
+        .attr("cy", function(d) { return y(d); });
+
+    dots.enter()
+      .append("circle")
+        .attr("class", "dot")
+        .attr('opacity', 0.5)
+        .attr("r", 3.5)
+        .attr("cx", function(d) { return randX(); })
+        .attr("cy", function(d) { return y(d); })
+        .call(drag);
+
+  });
+}
 
 setup();
+setupUser();
 
 function randomize(d) {
   console.log(d);
@@ -220,7 +319,7 @@ function randomizer(d) {
 }
 
 
-d3.select('#sliderMu').call(d3.slider().min(-3).max(3).step(0.2).value(mu).on("slide", function(evt, value) {
+d3.select('#sliderMu').call(d3.slider().min(-5).max(5).step(0.2).value(mu).on("slide", function(evt, value) {
     mu = value;
     newRand = d3.randomNormal(mu, sigma)
     data = [];
@@ -259,13 +358,20 @@ d3.select('#sliderSigma').call(d3.slider().min(0.1).max(2).step(0.1).value(sigma
 
 d3.select('#sliderN').call(d3.slider().min(10).max(100).step(1).value(N).on("slide", function(evt, value) {
     N = value;
-    data = [];
+    currentN = data[0].length;
 
-    for (i=0; i<N; i++){
-      data.push(newRand());
-    };
+    if (N > currentN){
+      for (i=currentN; i<N; i++){
+        data[0].push(newRand());
+      };
+    }
 
-    data = [data];
+    if (N < currentN){
+      for (i=N; i<currentN; i++){
+        data[0].pop();
+      };
+    }
+
     viz.data(data).call(chart.duration(1000));
 
     dots = svg.selectAll(".dot").data(data[0]);
