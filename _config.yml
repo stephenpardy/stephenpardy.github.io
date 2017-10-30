@@ -1,2 +1,5 @@
 name: Stephen Pardy
 markdown: kramdown
+
+collections:
+  - projects
