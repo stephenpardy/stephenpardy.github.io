@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link href="/bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style> /* set the CSS */
+
+.area {
+  opacity: 0.7;
+}
+.label {
+  font-size: 12px;
+  color: black;
+}
+
+.selected {
+  opacity: 1;
+}
+
+.profInUse{
+  background-color: steelblue;
+}
+
+.hidden {
+  stroke-width: 0px;
+}
+
+.notUsable {
+  background-color: #eee;
+}
+
+.svg-container {
+    display: inline-block;
+    position: relative;
+    width: 75%;
+    padding-bottom: 45%; /* aspect ratio */
+    vertical-align: middle;
+    overflow: hidden;
+}
+.svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
+}
+
+</style>
+<body>
+
+<button type = "button" class = "btn btn-secondary" onclick="toNorm()">Normalized</button>
+<button type = "button" class = "btn btn-secondary" onclick="toTot()">Total</button>
+
+<div class='row'>
+  <div class='col-md-9'>
+    <div id='chart'></div>
+  </div>
+  <div class='col-xs-1'>
+      <div id='typenameschart'></div>
+  </div>
+</div>
+
+<!-- load the d3.js library -->
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<script>
+
+// parse the date / time
+var parseTime = d3.timeParse("%d/%m/%Y");
+var formatTime = d3.timeFormat("%b-%y");
+
+dates = ["02/28/1986", "11/15/1990", "08/14/1992", "05/14/1993", "08/12/1994", "09/15/1995", "09/13/1996", "09/11/1998", "09/10/1999", "09/08/2000", "09/07/2001", "01/24/2003", "01/23/2004", "01/21/2005", "01/27/2006", "01/26/2007", "03/07/2008", "02/26/2010", "02/25/2011", "02/24/2012", "03/01/2013", "04/11/2014", "04/10/2015", "04/08/2016", "04/07/2017"]
+
+var t = d3.transition()
+    .duration(750)
+    .ease(d3.easeLinear);
+
+// set the dimensions and margins of the graph
+var margin = {top: 40, right: 20, bottom: 50, left: 60},
+    width = 600 - margin.left - margin.right,
+    height = 350 - margin.top - margin.bottom,
+    sideWidth = 100 - margin.left - margin.right
+    sideHeight = 350 - margin.top - margin.bottom;
+
+// set the ranges
+var x = d3.scaleLinear().range([0, width]);
+var y = d3.scaleLinear().range([height, 0]);
+
+var stack = d3.stack();
+
+var area = d3.area()
+    .x(function(d, i) { return x(i+1); })
+    .y0(function(d) { return y(+d[0]); })
+    .y1(function(d) { return y(+d[1]); });
+
+
+var svg = d3.select("#chart")
+            .classed("svg-container", true)
+            .append("svg")
+            .attr("preserveAspectRatio", "xMinYMin meet")
+            .attr("viewBox", "0 0 "+ (width + margin.left + margin.right) +
+                  " " + (height + margin.top + margin.bottom))
+            .classed("svg-content-responsive", true)
+          .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var svgnames = d3.select("#typenameschart")
+            .append("svg")
+            .attr("width", sideWidth + margin.left + margin.right)
+            .attr("height", sideHeight + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + -10 + "," + margin.top + ")");
+
+// Get the data
+
+var colorScale = d3.scaleOrdinal(d3.schemeCategory20);
+
+var data = null;
+var data_norm = [];
+
+d3.csv("/resources/HST_Mast_types.csv", function(error, input) {
+  if (error) throw error;
+
+  data = input;
+
+  data.forEach(function(d){
+    total = d3.sum(d3.entries(d), function(e) {
+                    return e['key'] !== 'cycle' ? +e['value'] : 0;
+          });
+    row = {};
+
+    d3.keys(d).forEach(function(key){
+      if (key !== 'cycle') {
+        row[key] = +d[key]/total
+      }
+    });
+    data_norm.push(row);
+  });
+
+  var xmin = 1//parseTime(dates[0]);
+  var xmax = 25//parseTime(dates[dates.length-1]);
+  x.domain([xmin, xmax]);
+
+  var keys = data.columns.slice(1);
+  stack.keys(keys);
+
+  y.domain([0, d3.max(data, function(d1){
+                  return d3.sum(d3.entries(d1), function(e) {
+                    return e['key'] !== 'cycle' ? +e['value'] : 0;
+                                                            }
+                                )      }
+                      )
+          ]);
+
+  var layer = svg.selectAll(".layer")
+    .data(stack(data))
+    .enter().append("g")
+      .attr("class", "layer");
+
+  layer.append("path")
+      .attr("class", "area")
+      .attr('id', function(d){ return d['key']})
+      .style("fill", function(d, i){ return colorScale(i); })
+      .attr("d", area);
+
+  // Add the X Axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+
+  // And the top Axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0, 0)")
+      .call(d3.axisTop(x)
+              .tickFormat(function(d) {return formatTime(parseTime(dates[d-1])); }));
+
+    // text label for the x axis
+  svg.append("text")
+      .attr("transform",
+            "translate(" + (width/2) + " ," +
+                           (height + margin.top) + ")")
+      .style("text-anchor", "middle")
+      .text("Cycle");
+
+    // top label
+  svg.append("text")
+      .attr("transform",
+            "translate(" + (width/2) + " ," +
+                           (-margin.top/2) + ")")
+      .style("text-anchor", "middle")
+      .text("Cycle due date");
+
+
+  // Add the Y Axis
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(d3.axisLeft(y));
+
+  // text label for the y axis
+  svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left)
+      .attr("x",0 - (height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("Programs per cycle");
+
+  var boxHeight = 20;
+  var boxWidth = 300;
+
+  var typeBoxes = svgnames.selectAll("g")
+                          .data(keys)
+                          .enter().append("g")
+                          .attr('class', 'nameBox')
+                          .on('mouseover', function(d){
+                              d3.select(this).select('rect')
+                                  .style('fill', '666');
+                                typeArea = d3.select('#'+d);
+                                typeArea.classed('selected', true);
+                           })
+                          .on('mouseout', function(d){
+                              d3.select(this).select('rect')
+                                  .style('fill', '#eee');
+                                typeArea = d3.select('#'+d);
+                                typeArea.classed('selected', false);
+                           })
+                          .on('click', function(d){
+                              typeArea = d3.select('#'+d);
+                              typeArea.classed('hidden', !typeArea.classed('hidden'));
+                              //paperButton = d3.select(this)
+                              //paperButton.classed("paperButtonOff", !paperButton.classed("paperButtonOff"));
+                              //paperLineToggle(d);
+                            });
+
+
+  typeBoxes.append("rect")
+            .attr("x", 10)
+            .attr("y", function(d, i) { return 20*i-8; })
+            .attr('width', 50)
+            .attr('height', 17)
+            .style('fill', '#eee');
+
+  typeBoxes.append("text")
+            .attr("x", 10)
+            .attr("y", function(d, i) { return 20*i; })
+            .attr("dy", ".35em")
+            .text(function(d) { return d; })
+            .style("fill", function(d, i){ return colorScale(i); })
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "15px");
+
+});
+
+
+function toNorm(){
+
+  y.domain([0, 1]);
+
+  svg.selectAll("path")
+      .data(stack(data_norm))
+      .transition(t)
+      .attr("d", area);
+
+  svg.selectAll('.y.axis')
+     .transition(t)
+     .call(d3.axisLeft(y))
+}
+
+function toTot(){
+
+  y.domain([0, d3.max(data, function(d1){
+                  return d3.sum(d3.entries(d1), function(e) {
+                    return e['key'] !== 'cycle' ? +e['value'] : 0;
+                                                            }
+                                )      }
+                      )
+          ]);
+
+  svg.selectAll("path")
+      .data(stack(data))
+      .transition(t)
+      .attr("d", area);
+
+  svg.selectAll('.y.axis')
+     .transition(t)
+     .call(d3.axisLeft(y))
+}
+
+
+
+
+function getTransformation(transform) {
+  // Create a dummy g for calculation purposes only. This will never
+  // be appended to the DOM and will be discarded once this function
+  // returns.
+  var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+  // Set the transform attribute to the provided string value.
+  g.setAttributeNS(null, "transform", transform);
+
+  // consolidate the SVGTransformList containing all transformations
+  // to a single SVGTransform of type SVG_TRANSFORM_MATRIX and get
+  // its SVGMatrix.
+  var matrix = g.transform.baseVal.consolidate().matrix;
+
+  // Below calculations are taken and adapted from the private function
+  // transform/decompose.js of D3's module d3-interpolate.
+  var {a, b, c, d, e, f} = matrix;   // ES6, if this doesn't work, use below assignment
+  // var a=matrix.a, b=matrix.b, c=matrix.c, d=matrix.d, e=matrix.e, f=matrix.f; // ES5
+  var scaleX, scaleY, skewX;
+  if (scaleX = Math.sqrt(a * a + b * b)) a /= scaleX, b /= scaleX;
+  if (skewX = a * c + b * d) c -= a * skewX, d -= b * skewX;
+  if (scaleY = Math.sqrt(c * c + d * d)) c /= scaleY, d /= scaleY, skewX /= scaleY;
+  if (a * d < b * c) a = -a, b = -b, skewX = -skewX, scaleX = -scaleX;
+  return {
+    translateX: e,
+    translateY: f,
+    rotate: Math.atan2(b, a) * 180 / Math.PI,
+    skewX: Math.atan(skewX) * 180 / Math.PI,
+    scaleX: scaleX,
+    scaleY: scaleY
+  };
+}
+
+</script>
+<script src="/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+</body>
