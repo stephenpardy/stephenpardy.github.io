@@ -1,0 +1,317 @@
+---
+layout: default
+title: HSTgrams
+---
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<style> /* set the CSS */
+
+.line {
+  fill: none;
+  stroke-width: 2px;
+  opacity: 0.7;
+}
+.label {
+  font-size: 12px;
+  color: black;
+}
+.selected {
+  stroke-width: 3px;
+  opacity: 1;
+}
+
+.profInUse{
+  background-color: steelblue;
+}
+
+.hidden {
+  stroke-width: 0px;
+}
+
+
+.paperButtonOff {
+  opacity: 0.5;
+}
+
+.notUsable {
+  background-color: #eee;
+}
+
+button {
+  opacity: 0.8;
+}
+
+button:hover {
+  opacity: 1;
+}
+
+.svg-container {
+    display: inline-block;
+    position: relative;
+    width: 75%;
+    padding-bottom: 45%; /* aspect ratio */
+    vertical-align: middle;
+    overflow: hidden;
+}
+.svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
+}
+
+</style>
+
+<h2>Ngram search from HST abstracts</h2>
+
+<p>Enter a word or collection of words (up to three words together) to see their frequency in <a href="https://archive.stsci.edu/hst/abstract.html">Hubble Space Telescope abstracts</a>. Each word is counted once if it appears in an abstract. Words must be longer than one letter and are not case-sensitive.</p>
+
+<div class='row'>
+  <div class='col-sm-7 col-sm-offset-1'>
+    <div class='row'>
+      <span id='warningSpan'>Enter search term below.</span>
+      <form id="gramForm">
+          <input name="Submit"  type="submit" value="Search Abstracts" >
+          <input type="text" id="gramInput" placeholder="search term">
+      </form>
+    </div>
+    <div class='row'>
+      <div id='chart'></div>
+    </div>
+  </div>
+  <div class='col-sm-2'>
+    <div class='row'>
+      <div id='wordschart'><ul></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- load the d3.js library -->
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<script>
+
+document.getElementById('gramForm').addEventListener('submit', function(e) {
+    val = document.getElementById('gramInput').value;
+    handleInput(val);
+    //console.log(val);
+    e.preventDefault();
+}, false);
+
+// parse the date / time
+var parseTime = d3.timeParse("%d/%m/%Y");
+var formatTime = d3.timeFormat("%b-%y");
+
+var dates = ["02/28/1986", "11/15/1990", "08/14/1992", "05/14/1993", "08/12/1994", "09/15/1995", "09/13/1996",
+             "09/11/1998", "09/10/1999", "09/08/2000", "09/07/2001", "01/24/2003", "01/23/2004", "01/21/2005",
+             "01/27/2006", "01/26/2007", "03/07/2008", "02/26/2010", "02/25/2011", "02/24/2012", "03/01/2013",
+             "04/11/2014", "04/10/2015", "04/08/2016", "04/07/2017"];
+
+var totals = [316, 369, 177, 665, 516, 558, 936, 455, 346, 390, 356, 368, 308, 312, 286, 309,
+              564, 374, 370, 404, 398, 409, 439, 430, 452];
+
+var t = d3.transition()
+    .duration(750)
+    .ease(d3.easeLinear);
+
+var t2 = d3.transition()
+    .duration(500)
+    .delay(50)
+    .ease(d3.easeLinear);
+
+// set the dimensions and margins of the graph
+var margin = {top: 40, right: 20, bottom: 50, left: 60},
+    width = 600 - margin.left - margin.right,
+    height = 350 - margin.top - margin.bottom,
+    sideWidth = 400 - margin.left - margin.right
+    sideHeight = 800 - margin.top - margin.bottom;
+
+// set the ranges
+var x = d3.scaleLinear().range([0, width]);
+
+var y = d3.scaleLinear().range([height, 0]);
+
+// define the line
+var valueline = d3.line()
+    .x(function(d, i) { return x(i+1); })
+    //.x(function(d, i) { return x(parseTime(dates[i])); })
+    .y(function(d) { return y(+d); });
+
+var svg = d3.select("#chart")
+            .classed("svg-container", true)
+            .append("svg")
+            .attr("preserveAspectRatio", "xMinYMin meet")
+            .attr("viewBox", "0 0 "+ (width + margin.left + margin.right) +
+                  " " + (height + margin.top + margin.bottom))
+            .classed("svg-content-responsive", true)
+          .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var svgnames = d3.select("#wordschart")
+                 .select("ul");
+
+var colorScale = d3.scaleOrdinal(d3.schemeCategory20);
+
+var line_colors = [];
+var name_colors = [];
+
+for (i=0; i<20; i++){
+  line_colors.push(colorScale(i));
+  name_colors.push(colorScale(i));
+}
+
+var data = {};
+var ngrams = null
+
+d3.json("/resources/ngrams.json", function(error, ngrams_) {
+  if (error) throw error;
+
+  ngrams = ngrams_;
+
+  var xmin = 1//parseTime(dates[0]);
+  var xmax = 25//parseTime(dates[dates.length-1]);
+  var ymax = 1;
+
+  x.domain([xmin, xmax]);
+  y.domain([0, ymax]);
+
+  // Add the X Axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+
+  // And the top Axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0, 0)")
+      .call(d3.axisTop(x)
+              .tickFormat(function(d) {return formatTime(parseTime(dates[d-1])); }));
+
+    // text label for the x axis
+  svg.append("text")
+      .attr("transform",
+            "translate(" + (width/2) + " ," +
+                           (height + margin.top) + ")")
+      .style("text-anchor", "middle")
+      .text("Cycle");
+
+    // top label
+  svg.append("text")
+      .attr("transform",
+            "translate(" + (width/2) + " ," +
+                           (-margin.top/2) + ")")
+      .style("text-anchor", "middle")
+      .text("Cycle due date");
+
+  // Add the Y Axis
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(d3.axisLeft(y));
+
+  // text label for the y axis
+  svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left)
+      .attr("x",0 - (height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("Frequency per cycle");
+
+  //handleInput('Magellanic');
+
+});
+
+function redraw(){
+
+  var ymax = null;
+
+  d3.entries(data).forEach(function(d1){
+    d1['value'].forEach(function(d2){
+        ymax = d3.max([ymax, +d2]);
+      });
+  });
+
+  y.domain([0, ymax]);
+
+  // Add the Y Axis
+  svg.selectAll('.y.axis')
+     .transition(t)
+     .call(d3.axisLeft(y));
+
+  lines = svg.selectAll(".line")
+     .data(d3.entries(data), function(d){ return d['key']});
+
+  lines.enter()
+     .append("path")
+     .attr("class", "line")
+     .attr('id', function(d){ return d['key']})
+     .style('stroke', function(d){ return line_colors.pop(); })
+     .attr("d", function(d){ return valueline(d['value'])});
+
+  lines.transition(t)
+     .attr("d", function(d){ return valueline(d['value'])});
+
+  lines.exit()
+       .remove();
+
+};
+
+function handleInput(val){
+
+  val = val.toLowerCase();
+  document.getElementById('gramInput').value = "";
+
+  if (ngrams[val] === undefined){
+    document.getElementById("warningSpan").textContent = "'" + val + "' is too short or appears in fewer than six HST proposals.";
+    return false;
+  } else {
+    document.getElementById("warningSpan").textContent = "Enter search term below.";
+  }
+
+  data[val] = ngrams[val].map(function(d, i) { return d/totals[i]; });
+
+  reload();
+
+};
+
+function reload(){
+
+  var boxHeight = 20;
+  var boxWidth = 300;
+
+  var nameBoxes = svgnames.selectAll("li")
+                          .data(Object.keys(data), function(d){ return d; });
+
+  nameBoxes.enter()
+          .append("li")
+            .text(function(d) { return d; })
+            .style("color", function(d){ return name_colors.pop(); })
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "15px")
+          .append('button')
+            .style('position', 'absolute')
+            .style('left', "100%")
+            .attr("type", "button")
+            .attr("class", "close")
+            .attr("aria-label", "Close")
+          .append("span")
+            .attr('aria-hidden', true)
+            .html('&times;')
+            .on('click', function(d) {
+              name_colors.push(this.parentElement.parentElement.style['color']);
+              line_colors.push(this.parentElement.parentElement.style['color']);
+              delete data[d];
+              reload();
+            });
+
+  nameBoxes.exit().remove();
+
+  redraw();
+};
+
+
+</script>
