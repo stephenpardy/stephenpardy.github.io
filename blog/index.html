@@ -1,0 +1,21 @@
+---
+layout: default
+title: Data Blog
+---
+
+<p>I love to explore new datasets and find interesting trends. Below you can see some of the results.</p>
+<ul class="posts">
+
+  {% for post in site.posts %}
+    <li>
+        <div class="row top-buffer">
+            <div class="col-sm-4 col-sm-offset-1 col-md-3">
+                <a href="{{ post.url }}"><img src="{{ post.thumbnail }}" alt="{{ post.title }}"/></a>
+            </div>
+            <div class="col-sm-3">
+                <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a><br>{{ post.date | date_to_string }}
+            </div>
+        </div>
+    </li>
+  {% endfor %}
+</ul>

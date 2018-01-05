@@ -1,0 +1,27 @@
+---
+layout: default
+title: Visualizations
+---
+
+  <link href="{{ site.baseurl }}/css/visualization.css" rel="stylesheet">
+  <div class="container">
+
+  {% for viz in site.visualizations %}
+    <li>
+        <div class="row top-buffer">
+            <div class="col-sm-4">
+                <a href="{{ site.baseurl }}{{ viz.url }}"><img src="{{ site.baseurl }}{{ viz.thumbnail }}" alt="{{ viz.title }}"/></a>
+            </div>
+            <div class="col-sm-4">
+                <h3><a href="{{ site.baseurl }}{{ viz.url }}" title="{{ viz.title }}">{{ viz.title }}</a></h3>
+                <p>{{ viz.abstract }}</p>
+            </div>
+        </div>
+    </li>
+  {% endfor %}
+
+  </div>
+
+
+
+

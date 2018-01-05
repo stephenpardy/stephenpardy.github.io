@@ -1,25 +1,23 @@
 ---
 layout: default
-title: Data Thoughts
+title: Stephen Pardy
 ---
 
 
-<h1>Stephen Pardy</h1>
-<h3>Astronomy PhD student and dataviz aficionado.</h3>
+<h2>Stephen Pardy</h2>
 
-<h4>Projects:</h4>
-<ul class="posts">
+<div class="container">
+    <div class="row">
+    <div class="col-md-8">
+        <h2>About me</h2>
+        <p>I am a fifth year graduate student working with <a href="http://www.elenadonghia.com/">Elena D'Onghia</a> at the University of Wisconsin - Madison.</p>
+        <p>I run computational models of galaxies to understand how small galaxies grow, interact, and ultimately build larger systems like the Milky Way.</p>
+          <p>My work focuses Magellanic spirals - galaxies that, like the Large Magellanic Cloud, have misplaced bars, single spiral arms, or irregular features. Much of my current work is focused on how these galaxies can contribute gas to our own galaxy in the form of cold gas streams, and how the satellite population may be different around these galaxies.</p>
 
-  {% for post in site.posts %}
-    <li>
-        <div class="row top-buffer">
-            <div class="col-sm-4 col-sm-offset-1 col-md-3">
-                <a href="{{ post.url }}"><img src="{{ post.thumbnail }}" alt="{{ post.title }}"/></a>
-            </div>
-            <div class="col-sm-3">
-                <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a><br>{{ post.date | date_to_string }}
-            </div>
-        </div>
-    </li>
-  {% endfor %}
-</ul>
+        <p> You can also check out our group's <a href="https://donghiagroup.github.io/">Github page</a> to see publicly-available code.</p>
+    </div>
+    <div class="col-md-4">
+    <img src="/images/HeadShot.jpeg" alt="HeadShot" height=300>
+    </div>
+    </div>
+</div>

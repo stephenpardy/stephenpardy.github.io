@@ -1,0 +1,134 @@
+div.proj_content {
+    border: #000 solid 1px;
+    clear: left;
+    padding: 1em;
+
+}
+
+div.A-section {
+    max-width: 1280px;
+    padding-top: 60px;
+    min-height: 500px;
+    vertical-align: center;
+    background: #F0F0F0;
+}
+
+div.B-section {
+    max-width: 1280px;
+    padding-top: 60px;
+    min-height: 500px;
+    vertical-align: center;
+    background: white;
+}
+
+div.proj_content.inactive {
+    display: none;
+}
+
+html {
+  overflow-y: scroll;
+  position: relative;
+  min-height: 100%;
+  margin-bottom: 0px;
+}
+
+body {
+  padding-top: 50px;
+  min-height: 100% !important;
+  height: 100% !important;
+  font: 16px sans-serif;
+}
+
+* {
+    margin: 0;
+}
+
+
+a.hovertext {
+  position: relative;
+  width: 300px;
+  text-decoration: none !important;
+  text-align: center;
+}
+a.hovertext:after {
+  content: attr(title);
+  position: absolute;
+  left: 0;
+  bottom: 0px;
+  top: 280px;
+  padding: 0.5em 20px;
+  z-index: 1;
+  width: 300px;
+  height: 30px;
+  background: rgba(0,0,0,0.8);
+  text-decoration: none !important;
+  color: #fff;
+  opacity: 0;
+  -webkit-transition: 0.5s;
+  -moz-transition: 0.5s;
+  -o-transition: 0.5s;
+  -ms-transition: 0.5s;
+}
+a.hovertext:hover:after, a.hovertext:focus:after {
+  opacity: 1.0;
+}
+
+div.hban {
+   position: absolute;
+   top: 225px;
+   left: 100px;
+   width: 1118px;
+}
+
+div.hban span {
+   color: white;
+   background: rgb(0, 0, 0); /* fallback color */
+   background: rgba(0, 0, 0, 0.9);
+   padding-left: 0px;
+   padding-bottom: 10px;
+}
+
+
+
+span.text-content {
+  background: rgba(0,0,0,0.5);
+  color: white;
+  cursor: pointer;
+  display: table;
+  height: 150px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 150px;
+  opacity: 0;
+  -webkit-transition: opacity 500ms;
+  -moz-transition: opacity 500ms;
+  -o-transition: opacity 500ms;
+  transition: opacity 500ms;
+}
+
+ul.img-list li:hover span.text-content {
+  opacity: 1;
+}
+
+span.text-content span {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+}
+
+ul.img-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+ul.img-list li {
+  display: inline-block;
+  height: 150px;
+  margin: 0 1em 1em 0;
+  position: relative;
+  width: 150px;
+}
+

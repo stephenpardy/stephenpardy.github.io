@@ -1,0 +1,499 @@
+---
+---
+
+<html>
+<head>
+
+  <title>Fourier Modes</title>
+    <style type="text/css">
+    body {
+      font: 14px sans-serif;
+    }
+
+    input {
+      border-top: 0;
+      border-left: 0;
+      border-right: 0;
+      text-align: center;
+      font: 16px;
+      width: 60px;
+    }
+
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+
+    .line {
+      fill: none;
+      stroke-width: 4px;
+    }
+    .line.m1{
+        stroke:#000;
+    }
+
+    .line.m2{
+        stroke:#018571;
+    }
+
+    .line.m3{
+        stroke:#a6611a;
+    }
+    .line.m4{
+        stroke:#d7191c;
+    }
+    .line.disk{
+        stroke:#000;
+    }
+
+    .line.bar{
+        stroke:#FF9933;
+    }
+    .overlay {
+      fill: none;
+      pointer-events: all;
+    }
+
+    .focus circle {
+      fill: none;
+      stroke: steelblue;
+    }
+    .focus line {
+      stroke: black;
+      shape-rendering: crispEdges;
+    }
+
+    .focus line.dist {
+      stroke: black;
+      opacity: 1;
+      stroke-width: 2;
+    }
+
+    .focus2 circle {
+      fill: none;
+      stroke: steelblue;
+    }
+    .focus2 line {
+      stroke: black;
+      shape-rendering: crispEdges;
+    }
+
+    .focus2 line.dist {
+      stroke: black;
+      stroke-width: 3;
+    }
+
+    .focus2 line.ref {
+      stroke-width: 2;
+      stroke-dasharray: 3, 3;
+    }
+
+    .legend rect {
+      fill:white;
+      stroke:black;
+      opacity:0.8;}
+    }
+    </style>
+</head>
+<body>
+<div id='chart'></div>
+<div id='chart2'></div>
+
+<div class="col-md-2" id="haloType">
+Halo Type:
+<select name="aa" onchange="update(this.value, _angle)">
+<option value="Hern">Hernquist</option>
+<option value="Dehnen">Dehnen</option>
+</select>
+</div>
+<div class="col-md-2" id="orbitalAngle">
+Orbital Angle:
+<select name="bb" onchange="update(_file, this.value)">
+<option value="45deg">Theta = 45</option>
+<option value="90deg">Theta = 90</option>
+<option value="0deg">Theta = 0, prograde</option>
+<option value="0deg_retro">Theta = 0, retrograde</option>
+</select>
+</div>
+<div class="col-md-3" id="modes">
+<input class="filter_button" id="m1_button" value="m1" type="checkbox" checked>m1</input>
+<input class="filter_button" id="m2_button" value="m2" type="checkbox" checked>m2</input>
+<input class="filter_button" id="m3_button" value="m3" type="checkbox">m3</input>
+<input class="filter_button" id="m4_button" value="m4" type="checkbox">m4</input>
+</div>
+<br>
+
+
+
+</body>
+<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="{{ site.baseurl }}/js/d3.legend.js"></script>
+<script type="text/javascript" src="{{ site.baseurl }}/js/d3.slider.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+<script src="{{ site.baseurl }}/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+
+fourierNames = ['m1', 'm2', 'm3', 'm4'];
+
+var margin = {
+    left:100,
+    right:30,
+    top:70,
+    bottom:50
+}
+var width = 650-margin.left-margin.right;
+var height = 350-margin.top-margin.bottom;
+
+var x = d3.scale.linear()
+    .domain([0.0, 4.0])
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([height, 0])
+    .domain([0.0, 1.0]);
+
+var y2 = d3.scale.linear()
+    .range([height, 0])
+    .domain([0, 3]);
+
+line_objs = {};
+fourierNames.forEach(function(name, i){
+    line_objs[name] = d3.svg.line()
+                    .x(function(d) { return x(d.times); })
+                    .y(function(d) { return y(d[name]); });
+});
+
+var lineDisk = d3.svg.line()
+    .x(function(d) { return x(d.times); })
+    .y(function(d) { return y2(d.diskDist); });
+
+var lineBar = d3.svg.line()
+    .x(function(d) { return x(d.times); })
+    .y(function(d) { return y2(d.barDist); });
+
+var xAxis = d3.svg.axis().scale(x).orient("bottom");
+
+var bisectTime = d3.bisector(function(d) { return d.times; }).left;
+
+var svg = d3.select('#chart')
+            .append('svg')
+            .attr('height', height+margin.bottom+margin.top)
+            .attr('width', width+margin.left+margin.right)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.bottom + ")");
+
+var svg2 = d3.select('#chart2')
+            .append('svg')
+            .attr('height', height+margin.bottom+margin.top)
+            .attr('width', width+margin.left+margin.right)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + 10 + ")");
+
+
+svg.append("g")
+   .attr("class","x axis")
+   .attr("transform", "translate(0," + (height) + ")")
+   .call(xAxis);
+
+var focus = svg.append("g")
+               .attr("class", "focus")
+               .style("display", "none");
+
+var yAxis = d3.svg.axis()
+              .scale(y)
+              .orient("left");
+
+svg.selectAll(".y.axis").remove();
+
+svg.append("g")
+   .attr("class", "y axis")
+   .attr("transform", "translate(1," + (0) + ")")
+   .call(yAxis)
+   .append("text")
+   .attr("transform", "rotate(-90)")
+   .attr("y", (-margin.left+10))
+   .attr("x", (-height/2))
+   .attr("dy", "1em")
+   .style("text-anchor", "middle")
+   .style("Font-size", "15px")
+   .text("Average Amplitude");
+
+
+///////////////////////
+
+svg2.append("g")
+   .attr("class","x axis")
+   .attr("transform", "translate(0," + (height) + ")")
+   .call(xAxis);
+
+svg2.append("text")             // text label for the x axis
+    .attr("transform",
+          "translate(" + (width/2) + " ," +
+                         (height+margin.bottom)+ ")")
+    .style("text-anchor", "middle")
+    .style("Font-size", "15px")
+    .text("Time [Gyr]");
+
+var focus2 = svg2.append("g")
+               .attr("class", "focus2")
+               .style("display", "none");
+svg2.selectAll(".y.axis").remove();
+
+var yAxis2 = d3.svg.axis()
+              .scale(y2)
+              .orient("left");
+
+svg2.append("g")
+   .attr("class", "y axis")
+   .attr("transform", "translate(1, " + (0) + ")")
+   .call(yAxis2)
+   .append("text")
+   .attr("transform", "rotate(-90)")
+   .attr("y", (-margin.left+10))
+   .attr("x", (-height/2))
+   .attr("dy", "1em")
+   .style("text-anchor", "middle")
+   .style("Font-size", "15px")
+   .text("Distance from Halo Center [kpc]");
+
+//////////////////////
+var _angle = "45deg";
+var _file = 'Hern';
+
+var _selected = {
+  m1: 1,
+  m2: 1,
+  m3: 0,
+  m4: 0
+};
+
+function render(filename, angle){
+  _angle = angle;
+  _file = filename;
+  d3.csv(filename+'Fourier.csv', function(error, dataset) {
+    fourierdata = dataset.map(function(d)
+    {
+      times = parseFloat(d["stars90degtime"])
+      m1 = parseFloat(d["stars"+angle+"m1"])
+      m2 = parseFloat(d["stars"+angle+"m2"])
+      m3 = parseFloat(d["stars"+angle+"m3"])
+      m4 = parseFloat(d["stars"+angle+"m4"])
+      return {"times": times, "m1": m1, "m2": m2, "m3": m3, "m4": m4};
+    });
+    d3.csv(filename+'Offsets.csv', function(error, dataset) {
+      offsetsdata = dataset.map(function(d)
+      {
+        times = parseFloat(d["stars90degtime"])
+        diskDist = parseFloat(d["stars"+angle+"diskDist"])
+        barDist = parseFloat(d["stars"+angle+"barDist"])
+        return {"times": times, "diskDist": diskDist, "barDist": barDist};
+      });
+    svg.selectAll(".line").remove();
+
+    var lines = svg.selectAll(".line").data([fourierdata]).attr("class","line");
+
+    fourierNames.forEach(function(d, i){
+        lines.enter().append("path")
+             .attr("class","line "+d)
+             .attr("data-legend",d)
+             .style("opacity", _selected[d])
+             .attr("d", line_objs[d]);
+        focus.append("circle")
+             .attr("class", d)
+             .attr("opacity", _selected[d])
+             .attr("r", 4.5);
+        focus.append("text")
+             .attr("class", d)
+             .attr("opacity", _selected[d])
+             .text(d + " = ")
+             .style('font-size', '17px')
+             .attr("dx", '0.5em')
+             .attr("x", 0)
+             .attr("y", y(0.85-i*0.06));
+    });
+
+    focus.append("text")
+         .attr("class", "time")
+         .text("t = ")
+         .style('font-size', '17px')
+         .attr("x", 0)
+         .attr("dx", '0.5em')
+         .attr("y", y(0.95));
+
+    focus.append("line")
+        .attr("class", "dist")
+        .attr("x1", 0)
+        .attr("x2", 0)
+        .attr("y1", y(0.0))
+        .attr("y2", y(1.0))
+        .style("stroke-width", 2)
+        .style("stroke-dasharray", ("3, 3"));
+
+    svg.append("rect")
+        .attr("class", "overlay")
+        .attr("width", width)
+        .attr("height", height)
+        .on("mouseover", function() { focus.style("display", null); focus2.style("display", null); })
+        .on("mouseout", function() { focus.style("display", "none"); focus2.style("display", "none");})
+        .on("mousemove", mousemove);
+
+    legend = svg.append("g")
+        .attr("class","legend")
+        .attr("transform","translate("+(width-margin.right)+","+margin.top+")")
+        .attr("font-size","14px")
+        .call(d3.legend);
+
+////
+    var lines2 = svg2.selectAll(".line").data([offsetsdata]).attr("class","line");
+    lines2.enter().append("path")
+      .attr("class", "line disk")
+      .attr("data-legend", "Disk")
+      .attr("d", lineDisk);
+
+    lines2.enter().append("path")
+      .attr("class", "line bar")
+      .attr("data-legend", "Bar")
+      .attr("d", lineBar);
+
+    focus2.append("line")
+        .attr("class", "dist")
+        .attr("x1", 0)
+        .attr("x2", 0)
+        .attr("y1", 0)
+        .attr("y2", 0);
+
+    focus2.append("line")
+        .attr("class", "ref")
+        .attr("x1", 0)
+        .attr("x2", 0)
+        .attr("y1", y2(0.0))
+        .attr("y2", y2(3.0))
+
+
+    focus2.append("circle")
+          .attr("class", "disk")
+          .attr("r", 4.5);
+    focus2.append("circle")
+          .attr("class", "bar")
+          .attr("r", 4.5);
+
+    focus2.append("text")
+        .style('font-size', '17px')
+        .attr("x", 9)
+        .attr("y", y2(2.9))
+        .attr("dy", ".35em");
+
+    svg2.append("rect")
+        .attr("class", "overlay")
+        .attr("width", width)
+        .attr("height", height)
+        .on("mouseover", function() { focus.style("display", null); focus2.style("display", null); })
+        .on("mouseout", function() { focus.style("display", "none"); focus2.style("display", "none"); })
+        .on("mousemove", mousemove);
+
+    legend2 = svg2.append("g")
+        .attr("class","legend")
+        .attr("transform","translate("+(width-margin.right)+","+margin.top+")")
+        .attr("font-size","14px")
+        .call(d3.legend);
+    });
+  });
+};
+
+function update(filename, angle){
+  _angle = angle;
+  _file = filename;
+  d3.csv(filename+'Fourier.csv', function(error, dataset) {
+    fourierdata = dataset.map(function(d)
+    {
+      times = parseFloat(d["stars90degtime"])
+      m1 = parseFloat(d["stars"+angle+"m1"])
+      m2 = parseFloat(d["stars"+angle+"m2"])
+      m3 = parseFloat(d["stars"+angle+"m3"])
+      m4 = parseFloat(d["stars"+angle+"m4"])
+      return {"times": times, "m1": m1, "m2": m2, "m3": m3, "m4": m4};
+    });
+    d3.csv(filename+'Offsets.csv', function(error, dataset) {
+      offsetsdata = dataset.map(function(d)
+      {
+        times = parseFloat(d["stars90degtime"])
+        diskDist = parseFloat(d["stars"+angle+"diskDist"])
+        barDist = parseFloat(d["stars"+angle+"barDist"])
+        return {"times": times, "diskDist": diskDist, "barDist": barDist};
+      });
+
+      fourierNames.forEach(function(name, i){
+          svg.selectAll(".line."+name)
+             .data([fourierdata])
+             .transition()
+             .duration(750)
+             .attr("d", line_objs[name]);
+      });
+
+      svg2.selectAll(".line.disk")
+         .data([offsetsdata])
+         .transition()
+         .duration(750)
+         .attr("d", lineDisk);
+      svg2.selectAll(".line.bar")
+         .data([offsetsdata])
+         .transition()
+         .duration(750)
+         .attr("d", lineBar);
+    });
+  });
+};
+
+function mousemove() {
+  var x0 = x.invert(d3.mouse(this)[0]),
+      i = bisectTime(fourierdata, x0, 1),
+      d0 = fourierdata[i - 1],
+      d1 = fourierdata[i],
+      d = x0 - d0.times > d1.times - x0 ? d1 : d0;
+  focus.select("line.dist").attr("transform", "translate(" + x(d.times) + ", 0)");
+  focus.select("text.time").attr("transform", "translate(" + x(d.times) + ", 0)")
+                           .text("t = "+(d.times).toFixed(2));
+  fourierNames.forEach(function(name, ind){
+        focus.select("circle."+name).attr("transform", "translate(" + x(d.times) + "," + y(d[name]) + ")");
+        focus.select("text."+name).attr("transform", "translate(" + x(d.times) + ", 0)")
+                               .text(name+" = "+(d[name]).toFixed(2));
+        });
+//////
+  i = bisectTime(offsetsdata, x0, 1),
+  d0 = offsetsdata[i - 1];
+  d1 = offsetsdata[i];
+  d = x0 - d0.times > d1.times - x0 ? d1 : d0;
+  focus2.select("circle.disk").attr("transform", "translate(" + x(d.times) + "," + y2(d.diskDist) + ")");
+  focus2.select("circle.bar").attr("transform", "translate(" + x(d.times) + "," + y2(d.barDist) + ")");
+  focus2.select("text").text("Bar-Disk offset = "+(d.diskDist-d.barDist).toFixed(2)+" kpc")
+                       .attr("transform", "translate(" + x(d.times) + ", 0)");
+  focus2.select("line.dist").attr("transform", "translate(" + x(d.times) + ", 0)");
+  focus2.select("line.dist").attr("y1", y2(d.barDist)).attr("y2", y2(d.diskDist));
+  focus2.select("line.ref").attr("transform", "translate(" + x(d.times) + ", 0)");
+
+};
+
+d3.selectAll(".filter_button").on("change", function() {
+    var opacity = this.checked ? 1 : 0;
+    _selected[this.value] = opacity;
+    svg.select(".line."+this.value)
+       .style("opacity", opacity);
+    svg.select("circle."+this.value)
+         .style("opacity", opacity);
+    svg.select("text."+this.value)
+         .style("opacity", opacity);
+/////
+    svg2.select(".line."+this.value)
+       .style("opacity", opacity);
+    svg2.select("circle."+this.value)
+         .style("opacity", opacity);
+    svg2.select("text."+this.value)
+         .style("opacity", opacity);
+  });
+
+render(_file, _angle);
+
+</script>
+</html>

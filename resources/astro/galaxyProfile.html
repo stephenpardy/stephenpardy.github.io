@@ -1,0 +1,517 @@
+---
+---
+
+<html>
+<head>
+
+  <title>Dehnen Density and Velocity</title>
+  <link href="{{ site.baseurl }}/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ site.baseurl }}/css/d3.slider.css" />
+    <style type="text/css">
+    body {
+      font: 16px sans-serif;
+    }
+
+    input {
+      border-top: 0;
+      border-left: 0;
+      border-right: 0;
+      text-align: center;
+      font: 14px;
+      width: 60px;
+    }
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke-width: 2px;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+    .btn-halo{
+      color: #333;
+      background-color:#66c2a5;
+      border-color: #ccc;
+    }
+    .btn-disk{
+      color: #333;
+      background-color:#fc8d62;
+      border-color: #ccc;
+    }
+    .btn-bulge{
+      color: #333;
+      background-color:#8da0cb;
+      border-color: #ccc;
+    }
+    .line {
+      fill: none;
+      stroke-width: 3px;
+    }
+
+
+    .line.disk{
+        stroke:#fc8d62;
+    }
+
+    .line.halo{
+        stroke:#66c2a5;
+    }
+    .line.bulge{
+        stroke:#8da0cb;
+    }
+    .line.total{
+        stroke-dashoffset: 4px;
+        stroke-dasharray: 4 4;
+        stroke:black;
+    }
+    .line.modes{
+        stroke:black;
+    }
+
+    .legend rect {
+      fill:white;
+      stroke:black;
+      opacity:0.8;}
+
+    </style>
+</head>
+<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<body>
+<div class="row" id ="controls">
+
+  <div class="col-md-3" id="halo">
+    <button class="btn btn-halo" type="button" data-toggle="collapse" data-target="#collapseHalo" aria-expanded="false" aria-controls="collapseHalo" id="haloButton" onclick="toggleHalo()">
+      Halo
+      <span class="glyphicon glyphicon-plus" aria-hidden="true" id="halo-glyph"></span>
+    </button>
+    <div class="collapse in" id="collapseHalo">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h1 class="panel-title">
+            Halo Properties<a tabindex="0" class="btn btn-sml" role="button" data-toggle="popover" data-trigger="focus" title="Dark Matter Halo"
+                            data-content="We use a Dehnen (1993) halo for the dark matter distribution. The gamma parameter controls the inner density. A gamma equal to 1 is the Hernquist profile.">
+                            <span class="glyphicon glyphicon-question-sign" aria-hidden="true" id="halo-glyph"></span>
+                            </a>
+          </h1>
+        </div>
+        <div class="panel-body">
+          <h3>Mass = <span id="sliderMhaloText">120</span>* \(10^{10}\) M\(_{\odot}\)</h3>
+          <div id="sliderMhalo"></div>
+          <h3>Scale Length = <span id="sliderRhaloText">20</span> kpc</h3>
+          <div id="sliderRhalo"></div>
+          <h3>Gamma = <span id="sliderGammaText">1</span></h3>
+          <div id="sliderGamma"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3" id="disk">
+    <button class="btn btn-disk" type="button" data-toggle="collapse" data-target="#collapseDisk" aria-expanded="false" aria-controls="collapseDisk" onclick="toggleDisk()">
+      Disk
+      <span class="glyphicon glyphicon-plus" aria-hidden="true" id="disk-glyph"></span>
+    </button>
+    <div class="collapse in" id="collapseDisk">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h1 class="panel-title">Disk Properties<a tabindex="0" class="btn btn-sml" role="button" data-toggle="popover" data-trigger="focus" title="Stellar Disk"
+                            data-content="We use an exponential stellar disk.">
+                            <span class="glyphicon glyphicon-question-sign" aria-hidden="true" id="halo-glyph"></span>
+                            </a></h1>
+        </div>
+        <div class="panel-body">
+          <h3>\(\Sigma_{0}\) = <span id="sliderMdiskText">0.2</span>* \(10^{10}\) M\(_{\odot}\) kpc\(^{-2}\)</h3>
+          <div id="sliderMdisk"></div>
+          <h3>Scale Length = <span id="sliderRdiskText">2</span> kpc</h3>
+          <div id="sliderRdisk"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3" id="bulge">
+    <button class="btn btn-bulge" type="button" data-toggle="collapse" data-target="#collapseBulge" aria-expanded="false" aria-controls="collapseBulge" onclick="toggleBulge()">
+      Bulge
+      <span class="glyphicon glyphicon-plus" aria-hidden="true" id="bulge-glyph"></span>
+    </button>
+    <div class="collapse in" id="collapseBulge">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h1 class="panel-title">Bulge Properties<a tabindex="0" class="btn btn-sml" role="button" data-toggle="popover" data-trigger="focus" title="Stellar Bulge"
+                            data-content="We use a Hernquist spherical bulge.">
+                            <span class="glyphicon glyphicon-question-sign" aria-hidden="true" id="halo-glyph"></span>
+                            </a></h1>
+        </div>
+        <div class="panel-body">
+          <h3>Mass = <span id="sliderMbulgeText">1</span>* \(10^{10}\) M\(_{\odot}\)</h3>
+          <div id="sliderMbulge"></div>
+          <h3>Scale Length = <span id="sliderRbulgeText">1</span> kpc</h3>
+          <div id="sliderRbulge"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="row" id ="charts">
+  <div class="col-md-4" id="rotCurve">
+    <div id='chart'></div>
+  </div>
+  <div class="col-md-4 col-md-offset-2" id="numArms">
+      <div id='chartArms'></div>
+  </div>
+</div>
+
+</body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="{{ site.baseurl }}/js/d3.legend.js"></script>
+<script type="text/javascript" src="{{ site.baseurl }}/js/d3.slider.js"></script>
+<script src="{{ site.baseurl }}/js/bessel/bessel.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+<script src="{{ site.baseurl }}/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+
+var gamma = 1;
+var mhalo = 120; //10^10 msun
+var rhalo = 20; //kpc
+var sigma0 = 0.2; //10^10 msun/ kpc^2
+var rdisk = 2; //kpc
+var mbulge = 1; // 10^10 msun
+var rbulge = 1;// kpc
+var r = d3.range(0.1, 20, 0.1);
+var components = [0, 1, 2];
+var classes = ["halo", "disk", "bulge", "total"];
+//appendDisk();
+
+function toggleHalo(){
+  var index = $.inArray(0, components);
+  if (index > -1){
+    components.splice(index, 1);
+    document.getElementById("halo-glyph").className = "glyphicon glyphicon-plus"
+  } else {
+    components.push(0);
+    document.getElementById("halo-glyph").className = "glyphicon glyphicon-minus"
+  }
+  render(gamma, mhalo, rhalo, sigma0, rdisk, mbulge, rbulge);
+};
+
+function toggleDisk(){
+  var index = $.inArray(1, components);
+  if (index > -1){
+    components.splice(index, 1);
+    document.getElementById("disk-glyph").className = "glyphicon glyphicon-plus"
+  } else {
+    components.push(1);
+    document.getElementById("disk-glyph").className = "glyphicon glyphicon-minus"
+  }
+  render(gamma, mhalo, rhalo, sigma0, rdisk, mbulge, rbulge);
+};
+
+function toggleBulge(){
+  var index = $.inArray(2, components);
+  if (index > -1){
+    components.splice(index, 1);
+    document.getElementById("bulge-glyph").className = "glyphicon glyphicon-plus"
+  } else {
+    components.push(2);
+    document.getElementById("bulge-glyph").className = "glyphicon glyphicon-minus"
+  }
+  render(gamma, mhalo, rhalo, sigma0, rdisk, mbulge, rbulge);
+};
+
+function newVel(gamma, mhalo, rhalo, sigma0, rdisk, mbulge, rbulge){
+  var dat = components.map(function(type, i){
+    return d3.range(0.1, 20, 0.1).map(function(item,index){
+        return { x:item, y:getVelocity(type, item, gamma, mhalo, rhalo, sigma0, rdisk, mbulge, rbulge),
+                 i:type};
+    });
+  });
+  var tot = d3.range(0.1, 20, 0.1).map(function(item,index){
+      var ysum = 0
+      for (var i=0; i<dat.length; i++){
+        ysum += Math.pow(dat[i][index].y, 2);
+      }
+      ysum = Math.sqrt(ysum);
+      return { x:item, y:ysum, i:3};
+    });
+  dat.push(tot);
+  return dat;
+};
+
+function computeNumArms(gamma, mhalo, rhalo, sigma0, rdisk, mbulge, rbulge){
+    var index = $.inArray(0, components);
+    if (index == -1){
+        mhalo = 0;
+    };
+    var index = $.inArray(1, components);
+    if (index == -1){
+        sigma0 = 0;
+    };
+    var index = $.inArray(2, components);
+    if (index == -1){
+        mbulge = 0;
+    };
+
+    var mdisk = 2*Math.PI*sigma0*Math.pow(rdisk, 2)*(1 - Math.exp(-5*rdisk/rdisk)*
+                                                         (1 + 5*rdisk/rdisk)
+                                                    );
+    var numArms = d3.range(0.1, 10, 0.1).map(function(item, index){
+    var X = 1.5; //Toomre X parameter
+    var y = item/(2*rdisk);
+    var m = Math.exp(2*y)/X*(
+                             (mbulge/mdisk*(2*y+3*rbulge/rdisk)/Math.pow(2*y+rbulge/rdisk, 3)
+                         ) + (Math.pow(rdisk, 2)*mhalo/mdisk*Math.pow(item, 1-gamma)*
+                              Math.pow(rhalo+item, -4+gamma)*(item-rhalo*(-4+gamma))
+                         ) + Math.pow(y, 2)/2*(3*besseli(y, 1)*besselk(y, 0) -
+                                               3*besseli(y, 0)*besselk(y, 1) +
+                                               besseli(y, 1)*besselk(y, 2) -
+                                               besseli(y, 2)*besselk(y, 1)
+                         ) + 4*y*(besseli(y, 0)*besselk(y, 0)-besseli(y, 1)*besselk(y, 1)
+                         )
+            );
+
+    return {x:item, y:m};
+  });
+  return numArms;
+};
+
+var G = 43007.0;
+
+var margin = {
+    left:70,
+    right:30,
+    top:30,
+    bottom:40
+}
+var width = 500;
+var height = 300-37;
+
+var color = d3.scale.category10();
+// Rotation curve stuff
+var svg = d3.select('#chart')
+            .append('svg')
+            .attr('height', height+margin.bottom)
+            .attr('width', width)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var xScale = d3.scale.linear()
+  .domain(d3.extent(r))
+  .range([0,width - margin.left - margin.right])
+
+var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+svg.append("g")
+   .attr("class","x axis")
+   .attr("transform", "translate(0," + (height-margin.bottom-margin.top) + ")")
+   .call(xAxis);
+
+svg.append("text")             // text label for the x axis
+    .attr("transform",
+          "translate(" + (width/3+30) + " ," +
+                         (height-margin.top)+ ")")
+    .style("text-anchor", "middle")
+    .style("Font-size", "20px")
+    .text("Radius [kpc]");
+
+var yScale = d3.scale.linear()
+  .range([height - margin.top - margin.bottom,0])
+
+var line = d3.svg.line().interpolate("monotone")
+  .x(function(d){ return xScale(d.x); })
+  .y(function(d){return yScale(d.y); })
+
+// Number of arms stuff
+var svgArms = d3.select('#chartArms')
+            .append('svg')
+            .attr('height', height+margin.bottom)
+            .attr('width', width)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var xScaleArms = d3.scale.linear()
+  .domain([0.1, 10])
+  .range([0,width - margin.left - margin.right])
+
+var xAxisArms = d3.svg.axis().scale(xScaleArms).orient("bottom");
+svgArms.append("g")
+   .attr("class","x axis")
+   .attr("transform", "translate(0," + (height-margin.bottom-margin.top) + ")")
+   .call(xAxisArms);
+
+svgArms.append("text")             // text label for the x axis
+    .attr("transform",
+          "translate(" + (width/3+30) + " ," +
+                         (height-margin.top)+ ")")
+    .style("text-anchor", "middle")
+    .style("Font-size", "20px")
+    .text("Radius [kpc]");
+
+var yScaleArms = d3.scale.linear()
+                   .range([height - margin.top - margin.bottom,0])
+                   .domain([0, 8]);
+
+var lineArms = d3.svg.line().interpolate("monotone")
+  .x(function(d){ return xScaleArms(d.x); })
+  .y(function(d){ return yScaleArms(d.y); })
+
+var yAxisArms = d3.svg.axis()
+                  .scale(yScaleArms)
+                  .orient("left");
+
+
+svgArms.append("g")
+       .attr("class", "y axis")
+       .call(yAxisArms)
+       .append("text")
+       .attr("transform", "rotate(-90)")
+       .attr("y", (-margin.left))
+       .attr("x", (-height/2+30))
+       .attr("dy", "1em")
+       .style("text-anchor", "middle")
+       .style("Font-size", "20px")
+       .text("Number of Arms");
+
+function render(gamma, mhalo, rhalo, sigma0, rdisk, mbulge, rbulge){
+  // generate new dataset
+  var data = newVel(gamma, mhalo, rhalo, sigma0, rdisk, mbulge, rbulge);
+  var numArms = computeNumArms(gamma, mhalo, rhalo, sigma0, rdisk, mbulge, rbulge);
+  // obtain absolute min and max
+  var yMin = data.reduce(function(pv,cv){
+    var currentMin = cv.reduce(function(pv,cv){
+      return Math.min(pv,cv.y);
+    },100)
+    return Math.min(pv,currentMin);
+  },100);
+  var yMax = data.reduce(function(pv,cv){
+    var currentMax = cv.reduce(function(pv,cv){
+      return Math.max(pv,cv.y);
+    },0)
+    return Math.max(pv,currentMax);
+  },0);
+
+  // set as domain for axis
+
+  //Rotation Curve
+  yScale.domain([yMin, yMax]);
+
+  var yAxis = d3.svg.axis()
+                .scale(yScale)
+                .orient("left");
+
+  svg.selectAll(".y.axis").remove();
+
+  svg.append("g")
+     .attr("class", "y axis")
+     .call(yAxis)
+     .append("text")
+     .attr("transform", "rotate(-90)")
+     .attr("y", (-margin.left))
+     .attr("x", (-height/2 + 30))
+     .attr("dy", "1em")
+     .style("text-anchor", "middle")
+     .style("Font-size", "20px")
+     .text("Velocity [km/s]");
+
+  svg.selectAll(".line").remove();
+
+  var lines = svg.selectAll(".line").data(data).attr("class","line");
+
+  lines.enter().append("path")
+    .attr("class", function(d) {return "line "+classes[d[0].i]})
+    .attr("data-legend", function(d) {return classes[d[0].i]})
+    .attr("d",line);
+  svg.selectAll(".legend").remove();
+  legend = svg.append("g")
+              .attr("class","legend")
+              .attr("transform","translate("+margin.left+","+margin.top+")")
+              .style("font-size","14px")
+              .call(d3.legend);
+
+
+  // Number of Arms
+  svgArms.selectAll(".line").remove();
+
+  var linesArms = svgArms.append("path")
+                         .datum(numArms)
+                         .attr("class", "line modes")
+                         .attr("d", lineArms);
+
+}
+
+d3.select('#sliderMhalo').call(d3.slider().min(10).max(200).step(1).value(mhalo).on("slide", function(evt, value) {
+    mhalo = value;
+    render(gamma, mhalo, rhalo, sigma0, rdisk, mbulge, rbulge);
+    d3.select('#sliderMhaloText').text(value);
+}));
+
+d3.select('#sliderRhalo').call(d3.slider().min(1).max(50).step(1).value(rhalo).on("slide", function(evt, value) {
+    rhalo = value;
+    render(gamma, mhalo, rhalo, sigma0, rdisk, mbulge, rbulge);
+    d3.select('#sliderRhaloText').text(value);
+}));
+
+d3.select('#sliderGamma').call(d3.slider().min(0).max(1.9).step(0.1).value(gamma).on("slide", function(evt, value) {
+    gamma = value;
+    render(gamma, mhalo, rhalo, sigma0, rdisk, mbulge, rbulge);
+    d3.select('#sliderGammaText').text(value.toFixed(1));
+}));
+
+d3.select('#sliderMdisk').call(d3.slider().min(0).max(1).step(0.01).value(sigma0).on("slide", function(evt, value) {
+    sigma0 = value;
+    render(gamma, mhalo, rhalo, sigma0, rdisk, mbulge, rbulge);
+    d3.select('#sliderMdiskText').text(value.toFixed(2));
+}));
+
+d3.select('#sliderRdisk').call(d3.slider().min(0.1).max(10).step(0.1).value(rdisk).on("slide", function(evt, value) {
+    rdisk = value;
+    render(gamma, mhalo, rhalo, sigma0, rdisk, mbulge, rbulge);
+    d3.select('#sliderRdiskText').text(value.toFixed(1));
+}));
+
+d3.select('#sliderMbulge').call(d3.slider().min(0).max(10).step(0.1).value(mbulge).on("slide", function(evt, value) {
+    mbulge = value;
+    render(gamma, mhalo, rhalo, sigma0, rdisk, mbulge, rbulge);
+    d3.select('#sliderMbulgeText').text(value.toFixed(1));
+}));
+
+d3.select('#sliderRbulge').call(d3.slider().min(0.1).max(10).step(0.1).value(rbulge).on("slide", function(evt, value) {
+    rbulge = value;
+    render(gamma, mhalo, rhalo, sigma0, rdisk, mbulge, rbulge);
+    d3.select('#sliderRbulgeText').text(value.toFixed(1));
+}));
+
+document.getElementsByClassName("btn btn-disk")[0].click();
+document.getElementsByClassName("btn btn-halo")[0].click();
+document.getElementsByClassName("btn btn-bulge")[0].click();
+
+render(gamma, mhalo, rhalo, sigma0, rdisk, mbulge, rbulge);
+
+function getVelocityHalo(radius, gamma, mass, scale){
+    return Math.sqrt(G*mass*Math.pow(radius, 2-gamma)/
+                                Math.pow(radius+scale, 3-gamma));
+};
+
+function getVelocityDisk(radius, sigma0, scale){
+    var yTemp = radius/(2*scale);
+    return Math.sqrt(4*Math.PI*G*sigma0*scale*Math.pow(yTemp, 2)*
+                                (besseli(yTemp, 0)*besselk(yTemp, 0) -
+                                 besseli(yTemp, 1)*besselk(yTemp, 1)));
+};
+
+function getVelocity(type, x, gamma, mhalo, rhalo, sigma0, rdisk, mbulge, rbulge){
+    switch(type){
+        case 0:
+            return getVelocityHalo(x, gamma, mhalo, rhalo);
+        case 1:
+            return getVelocityDisk(x, sigma0, rdisk);
+        case 2:
+            return getVelocityHalo(x, 1, mbulge, rbulge);
+    }
+};
+
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover();
+});
+
+</script>
+</html>

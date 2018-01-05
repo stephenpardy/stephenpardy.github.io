@@ -1,0 +1,252 @@
+---
+layout: post
+title: "Hubble Abstracts"
+date: 2018-01-04
+thumbnail: /images/2017-01-04_thumbnail.png
+---
+
+<style>
+
+tr {
+  border-top: 1px solid #C1C3D1;
+  border-bottom-: 1px solid #C1C3D1;
+  color:#666B85;
+  font-size:16px;
+  font-weight:normal;
+  text-shadow: 0 1px 1px rgba(256, 256, 256, 0.1);
+}
+
+tr a {
+    color: #171760;
+}
+
+tr:hover th {
+  background:#929299;
+  color:#FFFFFF;
+  border-top: 1px solid #22262e;
+}
+
+</style>
+<h2>Tracking Hubble Proposals</h2>
+<p>
+The Hubble Space Telescope (HST) is one of the best tools that we have in astronomy. 540 kilometers above the Earth, Hubble is above the atmosphere and gets <a href="https://en.wikipedia.org/wiki/Diffraction-limited_system">diffraction limited</a> observations of a wide range of objects. Each cycle (usually once a year), hundreds of astronomers routinely ask for four to five times the amount of HST time and money as is available.
+
+HST was launched and is run by NASA, but the science operations are managed by <a href="http://stsci.edu/">Space Telescope Science Institute</a>. All the approved programs are listed on the <a href="https://archive.stsci.edu/hst/abstract.html">data archive</a>. For this analysis I downloaded all the abstracts and observing time associated with each cycle.
+
+Below we see the total number of programs per cycle. Click the buttons below to toggle between total and normalized representation.
+</p>
+<iframe src="/graphs/HST_Mast_types.html" marginwidth="0"
+        marginheight="0" scrolling="no" width="1000" height="400" frameBorder="0"></iframe>
+
+<p>
+The total number spiked in cycle 7 before settling to a fairly consitent value and then increasing slowly over the last few years. The spike in cycle 7 is simply because that cycle was about twice as long as all other cycles (this is due to the failure in the NICMOS instrument).
+</p>
+<p>
+As for the percentage of proposals of different types, we see that after HST was launched there were far more "GTO" projects. These are Guaranteed Time Observer programs which are given to the scientists who build the cameras and sensors on Hubble. After several years these programs are phased out, but new instruments have been added several time, which show up as small increases in the GTO breakdown.
+</p>
+<p>
+Although the "Cal" projects (routine calibration proposals that help keep HST running smoothly) have remained mostly consistent over the years, the "misc" projects spike as new instruments are added. These miscellaneous  projects are mostly commissioning work for the new instruments.
+</p>
+<p>
+Finally, we see a growth in archival projects after a few cycles, because data is only available for archival research roughly a year after the initial observations.
+</p>
+<p>
+I checked the MAST archive for all data related to every project. I then summed the exposure time of every project in all cycles. This gives some sense of how much total telescope time was available during each cycle. This same large spike in observing time associated with cycle 7.
+</p>
+<img class='img-responsive' src='/images/obs_time.jpeg'>
+
+<p>Again, this spike is simply due to the length of Cycle 7 -- GHRS failed in cycle 6 and NICMOS failed in cycle 7 (see <a href="http://www.stsci.edu/hst/proposing/panel/cycle-start-end.pdf">here</a> for more) which extended the cycle. Other than that cycle, the exposure time has stayed around the average of 18 million seconds per year (for reference, a year has 31.5 million seconds). </p>
+
+<h2>Inequality of Hubble Time</h2>
+<p>
+Let's turn now to the number of proposals per person. There are 2484 different PIs listed in the Hubble archive. I counted the number of successful proposals for each PI and found that most people have one, then two and so forth. And note here that we are only counting people who have successful proposals. In reality, the vast majority of proposers likely have no successfull proposals. Below you can see a histogram of the number of people with different numbers of proposals. Note the large tails.
+
+</p>
+<img class='img-responsive' src='/images/proposal_hist.jpeg'>
+
+<p>
+A small percentage of people have the majority of all the successful proposals. This can also be seen if we look at the cumulative distribution.
+<img class='img-responsive' src='/images/cumulative_proposal_dist.jpeg'>
+
+The bottom 2000 PIs have 34% of all proposals, thats the same percentage as the top 111 PIs! One way to quantify this is the <a href="https://en.wikipedia.org/wiki/Gini_coefficient">Gini coefficient</a>. The Gini coefficient is a popular measure of income inequality and is also used in astronomy to measure how spread out the light is from galaxies. The Gini coefficient for Hubble proposals is 0.6. This is roughly equal to some of the most unequal countries in the world and much larger than the US's income inequality of 0.4.
+</p>
+
+
+<h2>Who are these top proposers?</h2>
+
+<div class='row'>
+<div class='col-sm-6'>
+    <b>John W. MacKenty</b></br>
+    Total abstracts: 106</br>
+    CAL/WFC: 43, RPT/WFC: 1, SNAP: 2, GO: 7, GO/PAR: 3, CAL/NIC: 2, SM2/NIC: 12, CAL/WFC3: 34, SM4/WFC3: 1, GO/DD: 1
+    </br>
+    <b>Edmund Nelan</b></br>
+    Total abstracts: 98</br>
+    CAL/AST: 53, SM3/FGS: 13, SM3/SC: 1, SNAP: 3, CAL/OTA: 9, GO/DD: 3, GO: 9, ENG/FGS: 3, ENG/AST: 3, SM4/FGS: 1
+    </br>
+    <b>Keith S. Noll</b></br>
+    Total abstracts: 88</br>
+    GO/DD: 49, GO: 16, GO/CAR: 1, CAL/NIC: 4, SNAP: 6, SM3/NIC: 3, SM4/ERO: 9
+    </br>
+    <b>John A. Biretta</b></br>
+    Total abstracts: 86</br>
+    GO: 19, CAL/WFC: 2, SM2/WF2: 8, GO/PAR: 1, CAL/WF2: 36, CAL/ACS: 2, ENG/ACS: 4, ENG/WF2: 3, CAL/WFC3: 6, CAL/STIS: 5
+    </br>
+    <b>John Trauger</b></br>
+    Total abstracts: 69</br>
+    SMC/ERO: 1, GTO/WF2: 60, SMC/WF2: 5, SME/WF2: 1, GO: 1, GO/DD: 1
+    </br>
+</div>
+<div class='col-sm-6'>
+</div>
+<p>
+If we look at the five PIs with the most total abstracts we see that most of these people have lots of abstracts related to calibrations and are associated with NASA and Space Telescope Science Institute.
+</p></div>
+</p>
+
+<p>If we just focus on the GO proposals we have the most awarded proposers:</p>
+
+<div class='row'>
+<div class='col-sm-12'>
+<b>Howard E. Bond</b></br>
+Total abstracts: 52</br>
+</br>
+<b>Robert P. Kirshner</b></br>
+Total abstracts: 35</br>
+</br>
+<b>Julianne   Dalcanton</b></br>
+Total abstracts: 31</br>
+</br>
+<b>Thomas R. Ayres</b></br>
+Total abstracts: 29</br>
+</br>
+<b>Marc   Postman</b></br>
+Total abstracts: 27</br>
+</br>
+
+<p>
+Finally, what makes a good proposal? Proposers routinely ask for five times as much Hubble time as is available. With that in mind, there are many small things that proposers need to do to get their proposal accepted. One of these is to have a very novel idea that will help push the field forward. To look for this novelty I wanted to see word use in the abstracts over the cycles. <a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf">TF-IDF</a>, or term frequency- inverse document frequency, can help us with this. TF-IDF will show you the most common words in a certain document (in this case a document was all GO proposals in a single cycle), but down-weight the words that are very common across all documents (in this case all proposals from all cycles). The result is that the relatively more common words in each cycle will show up, while the very common words across all proposals will not show up.
+</p>
+<p>
+To be clear here, since we are mixing together all the proposals, a word may have a high term frequency either because it is used heavily in any one proposal or because is was used often across many proposals in that cycle.
+</p>
+<p>
+In the table below, each row shows the eight words with the highest TF-IDF scores. We can see some interesting trends stand out. The first cycle included the word 'hoped' a lot more than the later cycles - clearly the capabilities of Hubble hadn't been demonstrated yet.
+</p>
+<p>
+Words like Exoplanet become very common around cycle 20. Many other words are specific instruments (like wfc3) or the date that they are applying in.
+You can click on the words below to see all corresponding abstracts in the MAST archive.
+</p>
+
+<table border='1'>
+<tr>
+<th><b>Cycle 1</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=ag&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=1&type=&submit=submit>ag</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=discrimination&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=1&type=&submit=submit>discrimination</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=287&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=1&type=&submit=submit>287</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=hoped&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=1&type=&submit=submit>hoped</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=2251&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=1&type=&submit=submit>2251</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=esc&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=1&type=&submit=submit>esc</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=wf&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=1&type=&submit=submit>wf</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=hrs&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=1&type=&submit=submit>hrs</a></th>
+</tr>
+<tr>
+<th><b>Cycle 2</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=registration&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=2&type=&submit=submit>registration</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=r0&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=2&type=&submit=submit>r0</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=mination&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=2&type=&submit=submit>mination</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=rigid&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=2&type=&submit=submit>rigid</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=egos&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=2&type=&submit=submit>egos</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=deter&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=2&type=&submit=submit>deter</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=esc&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=2&type=&submit=submit>esc</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=0005&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=2&type=&submit=submit>0005</a></th>
+</tr>
+<tr>
+<th><b>Cycle 3</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=spectropolarimetric&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=3&type=&submit=submit>spectropolarimetric</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=serkowski&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=3&type=&submit=submit>serkowski</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=triton&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=3&type=&submit=submit>triton</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=ag&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=3&type=&submit=submit>ag</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=wf&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=3&type=&submit=submit>wf</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=venus&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=3&type=&submit=submit>venus</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=lpvs&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=3&type=&submit=submit>lpvs</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=n88a&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=3&type=&submit=submit>n88a</a></th>
+</tr>
+<tr>
+<th><b>Cycle 4</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=deter&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=4&type=&submit=submit>deter</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=rigid&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=4&type=&submit=submit>rigid</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=lsa&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=4&type=&submit=submit>lsa</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=4c41&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=4&type=&submit=submit>4c41</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=esc&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=4&type=&submit=submit>esc</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=wf&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=4&type=&submit=submit>wf</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=1993j&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=4&type=&submit=submit>1993j</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=0005&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=4&type=&submit=submit>0005</a></th>
+</tr>
+<tr>
+<th><b>Cycle 5</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=chiron&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=5&type=&submit=submit>chiron</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=triton&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=5&type=&submit=submit>triton</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=maunder&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=5&type=&submit=submit>maunder</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=wfpc&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=5&type=&submit=submit>wfpc</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=fliers&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=5&type=&submit=submit>fliers</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=phobos&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=5&type=&submit=submit>phobos</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=kms&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=5&type=&submit=submit>kms</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=lyalpha&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=5&type=&submit=submit>lyalpha</a></th>
+</tr>
+<tr>
+<th><b>Cycle 6</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=3cr&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=6&type=&submit=submit>3cr</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=ppne&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=6&type=&submit=submit>ppne</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=so_2&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=6&type=&submit=submit>so_2</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=inthe&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=6&type=&submit=submit>inthe</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=db&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=6&type=&submit=submit>db</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=kms&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=6&type=&submit=submit>kms</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=ofthe&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=6&type=&submit=submit>ofthe</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=lyalpha&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=6&type=&submit=submit>lyalpha</a></th>
+</tr>
+<tr>
+<th><b>Cycle 7</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=helical&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=7&type=&submit=submit>helical</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=triton&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=7&type=&submit=submit>triton</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=cavity&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=7&type=&submit=submit>cavity</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=jvas&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=7&type=&submit=submit>jvas</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=o_2&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=7&type=&submit=submit>o_2</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=lyalpha&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=7&type=&submit=submit>lyalpha</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=nic2&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=7&type=&submit=submit>nic2</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=1996&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=7&type=&submit=submit>1996</a></th>
+</tr>
+<tr>
+<th><b>Cycle 8</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=iso&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=8&type=&submit=submit>iso</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=axaf&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=8&type=&submit=submit>axaf</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=m_odot&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=8&type=&submit=submit>m_odot</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=hdf&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=8&type=&submit=submit>hdf</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=triton&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=8&type=&submit=submit>triton</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=lvc&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=8&type=&submit=submit>lvc</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=fliers&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=8&type=&submit=submit>fliers</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=lyalpha&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=8&type=&submit=submit>lyalpha</a></th>
+</tr>
+<tr>
+<th><b>Cycle 9</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=diffusion&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=9&type=&submit=submit>diffusion</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=sbs&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=9&type=&submit=submit>sbs</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=venus&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=9&type=&submit=submit>venus</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=lyalpha&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=9&type=&submit=submit>lyalpha</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=3he&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=9&type=&submit=submit>3he</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=593&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=9&type=&submit=submit>593</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=macho&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=9&type=&submit=submit>macho</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=1543&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=9&type=&submit=submit>1543</a></th>
+</tr>
+<tr>
+<th><b>Cycle 10</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=macho&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=10&type=&submit=submit>macho</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=blg&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=10&type=&submit=submit>blg</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=kms&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=10&type=&submit=submit>kms</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=em&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=10&type=&submit=submit>em</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=mbh&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=10&type=&submit=submit>mbh</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=lyalpha&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=10&type=&submit=submit>lyalpha</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=eq&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=10&type=&submit=submit>eq</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=lbcgs&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=10&type=&submit=submit>lbcgs</a></th>
+</tr>
+<tr>
+<th><b>Cycle 11</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=fr&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=11&type=&submit=submit>fr</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=m_odot&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=11&type=&submit=submit>m_odot</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=wim&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=11&type=&submit=submit>wim</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=blg&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=11&type=&submit=submit>blg</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=2001&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=11&type=&submit=submit>2001</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=sbs&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=11&type=&submit=submit>sbs</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=macho&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=11&type=&submit=submit>macho</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=ppns&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=11&type=&submit=submit>ppns</a></th>
+</tr>
+<tr>
+<th><b>Cycle 12</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=krypton&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=12&type=&submit=submit>krypton</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=rls&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=12&type=&submit=submit>rls</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=sirtf&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=12&type=&submit=submit>sirtf</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=scuba&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=12&type=&submit=submit>scuba</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=11b&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=12&type=&submit=submit>11b</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=lb&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=12&type=&submit=submit>lb</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=ceres&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=12&type=&submit=submit>ceres</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=hood&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=12&type=&submit=submit>hood</a></th>
+</tr>
+<tr>
+<th><b>Cycle 13</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=qlmxbs&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=13&type=&submit=submit>qlmxbs</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=pagb&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=13&type=&submit=submit>pagb</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=protocluster&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=13&type=&submit=submit>protocluster</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=westerlund&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=13&type=&submit=submit>westerlund</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=lirgs&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=13&type=&submit=submit>lirgs</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=js&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=13&type=&submit=submit>js</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=pox&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=13&type=&submit=submit>pox</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=fgs1r&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=13&type=&submit=submit>fgs1r</a></th>
+</tr>
+<tr>
+<th><b>Cycle 14</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=4449&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=14&type=&submit=submit>4449</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=bhxn&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=14&type=&submit=submit>bhxn</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=sscs&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=14&type=&submit=submit>sscs</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=m32&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=14&type=&submit=submit>m32</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=2m1207&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=14&type=&submit=submit>2m1207</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=lsb&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=14&type=&submit=submit>lsb</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=bss&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=14&type=&submit=submit>bss</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=egp&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=14&type=&submit=submit>egp</a></th>
+</tr>
+<tr>
+<th><b>Cycle 15</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=lmxbs&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=15&type=&submit=submit>lmxbs</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=scl&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=15&type=&submit=submit>scl</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=nic2&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=15&type=&submit=submit>nic2</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=afterglows&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=15&type=&submit=submit>afterglows</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=fgs1r&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=15&type=&submit=submit>fgs1r</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=ulirgs&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=15&type=&submit=submit>ulirgs</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=irac&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=15&type=&submit=submit>irac</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=hook&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=15&type=&submit=submit>hook</a></th>
+</tr>
+<tr>
+<th><b>Cycle 16</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=hn&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=16&type=&submit=submit>hn</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=irac&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=16&type=&submit=submit>irac</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=imbh&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=16&type=&submit=submit>imbh</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=sings&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=16&type=&submit=submit>sings</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=lyr&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=16&type=&submit=submit>lyr</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=auroras&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=16&type=&submit=submit>auroras</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=fg&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=16&type=&submit=submit>fg</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=lbgs&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=16&type=&submit=submit>lbgs</a></th>
+</tr>
+<tr>
+<th><b>Cycle 17</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=ppne&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=17&type=&submit=submit>ppne</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=enceladus&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=17&type=&submit=submit>enceladus</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=polaris&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=17&type=&submit=submit>polaris</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=hypervelocity&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=17&type=&submit=submit>hypervelocity</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=uvis&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=17&type=&submit=submit>uvis</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=lbgs&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=17&type=&submit=submit>lbgs</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=cos&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=17&type=&submit=submit>cos</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=wfc3&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=17&type=&submit=submit>wfc3</a></th>
+</tr>
+<tr>
+<th><b>Cycle 18</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=1796s&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=18&type=&submit=submit>1796s</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=nyquist&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=18&type=&submit=submit>nyquist</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=adds&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=18&type=&submit=submit>adds</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=uvis&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=18&type=&submit=submit>uvis</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=f275w&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=18&type=&submit=submit>f275w</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=cos&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=18&type=&submit=submit>cos</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=f475w&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=18&type=&submit=submit>f475w</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=wfc3&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=18&type=&submit=submit>wfc3</a></th>
+</tr>
+<tr>
+<th><b>Cycle 19</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=4042s&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=19&type=&submit=submit>4042s</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=adds&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=19&type=&submit=submit>adds</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=constancy&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=19&type=&submit=submit>constancy</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=uvis&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=19&type=&submit=submit>uvis</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=f275w&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=19&type=&submit=submit>f275w</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=f475w&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=19&type=&submit=submit>f475w</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=cos&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=19&type=&submit=submit>cos</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=wfc3&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=19&type=&submit=submit>wfc3</a></th>
+</tr>
+<tr>
+<th><b>Cycle 20</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=conduction&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=20&type=&submit=submit>conduction</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=exoplanets&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=20&type=&submit=submit>exoplanets</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=wise&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=20&type=&submit=submit>wise</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=laes&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=20&type=&submit=submit>laes</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=2011&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=20&type=&submit=submit>2011</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=uvis&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=20&type=&submit=submit>uvis</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=cos&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=20&type=&submit=submit>cos</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=wfc3&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=20&type=&submit=submit>wfc3</a></th>
+</tr>
+<tr>
+<th><b>Cycle 21</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=uvis&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=21&type=&submit=submit>uvis</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=initiative&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=21&type=&submit=submit>initiative</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=igrm&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=21&type=&submit=submit>igrm</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=alma&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=21&type=&submit=submit>alma</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=dm&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=21&type=&submit=submit>dm</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=lyc&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=21&type=&submit=submit>lyc</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=cos&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=21&type=&submit=submit>cos</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=wfc3&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=21&type=&submit=submit>wfc3</a></th>
+</tr>
+<tr>
+<th><b>Cycle 22</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=shield&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=22&type=&submit=submit>shield</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=2012&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=22&type=&submit=submit>2012</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=slsn&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=22&type=&submit=submit>slsn</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=2013&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=22&type=&submit=submit>2013</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=2014&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=22&type=&submit=submit>2014</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=cgm&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=22&type=&submit=submit>cgm</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=cos&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=22&type=&submit=submit>cos</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=wfc3&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=22&type=&submit=submit>wfc3</a></th>
+</tr>
+<tr>
+<th><b>Cycle 23</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=2014&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=23&type=&submit=submit>2014</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=alma&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=23&type=&submit=submit>alma</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=uvis&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=23&type=&submit=submit>uvis</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=exoplanets&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=23&type=&submit=submit>exoplanets</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=cgm&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=23&type=&submit=submit>cgm</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=2015&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=23&type=&submit=submit>2015</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=cos&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=23&type=&submit=submit>cos</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=wfc3&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=23&type=&submit=submit>wfc3</a></th>
+</tr>
+<tr>
+<th><b>Cycle 24</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=exoplanet&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=24&type=&submit=submit>exoplanet</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=exoplanets&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=24&type=&submit=submit>exoplanets</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=juno&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=24&type=&submit=submit>juno</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=2017&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=24&type=&submit=submit>2017</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=2016&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=24&type=&submit=submit>2016</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=udgs&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=24&type=&submit=submit>udgs</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=cos&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=24&type=&submit=submit>cos</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=wfc3&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=24&type=&submit=submit>wfc3</a></th>
+</tr>
+<tr>
+<th><b>Cycle 25</b></th>
+<th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=exoplanets&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=25&type=&submit=submit>exoplanets</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=lyc&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=25&type=&submit=submit>lyc</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=uvis&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=25&type=&submit=submit>uvis</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=exoplanet&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=25&type=&submit=submit>exoplanet</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=cgm&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=25&type=&submit=submit>cgm</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=udgs&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=25&type=&submit=submit>udgs</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=cos&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=25&type=&submit=submit>cos</a></th><th><a href=https://archive.stsci.edu/hst/abstract.html?abstract=wfc3&dispabs=yes&atitle=&fname=&lname=&prop_id=&cycle=25&type=&submit=submit>wfc3</a></th>
+</tr>
+</table>
+
+<p>
+Another way of looking at this change of word usage is to examine NGrams. We can see some trends below like above, for example exoplanets becomes more common over time. This time I am looking only at the appearance of the word in each abstract. So a word is only counted once for each abstract in a cycle that it appears in.
+
+<img class='img-responsive' src='/images/HST_ngrams.jpeg'>
+
+If you want to, you can <a href="/projects/HST_Mast_ngrams.html">play around with the data</a> yourself, just like the <a href="https://books.google.com/ngrams">Google NGram search for books</a>.
+</p>
+
+
