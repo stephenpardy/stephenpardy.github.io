@@ -1,7 +1,2 @@
 name: Stephen Pardy
 markdown: kramdown
-
-collections:
-  visualizations:
-    output: true
-    permalink: /visualizations/:path/

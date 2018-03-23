@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+{% include head.html %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-10">
+                {{ content }}
+            </div>
+        </div>
+        <div class="row bottom-buffer"></div>
+    </div><!-- /.container -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        $(".expanded").hide();
+
+        $(".expanded, .collapsed").click(function() {
+          $(this).parent().children(".expanded, .collapsed").toggle();
+        });
+      });
+    </script>
+    </body>
+</html>

@@ -68,6 +68,14 @@
   }
 }
 
+div .aboutcontainer {
+  margin-top: 20px;
+}
+
+div .aboutcol {
+  outline: 1px solid #999;
+}
+
 body {
   padding-top: 50px;
   font: 16px sans-serif;

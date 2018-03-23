@@ -1,27 +1,9 @@
----
-layout: front
-title: Stephen Pardy
----
+        <footer>
 
-
-<div class="container aboutcontainer">
-    <div class="row">
-      <div class="col-md-4">
-          <img src="/images/HeadShot.jpeg" alt="HeadShot" height=300>
-
-      </div>
-      <div class='col-md-6'>
-          <div class="container">
+        <div class="container">
             <div class="row">
-              <div class="col-12">
-                <h1>Stephen Pardy</h1>
-                <h2>PhD Student - Astronomy</h2>
-              </div>
-            </div>
-            <div class="row">
-
                 <div class="col-md-2">
-                    <p>email: stephenpardy [at] gmail.com</p>
+                    <p>email: spardy [at] astro.wisc.edu</p>
                 </div>
                 <div class="col-sm-1">
                     <p><a href="https://github.com/stephenpardy"><img src="/images/GitHub-Mark-64px.png" alt="Github"></a>
@@ -35,6 +17,17 @@ title: Stephen Pardy
             </div>
         </div>
 
-      </div>
-    </div>
-</div>
+        </footer>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        $(".expanded").hide();
+
+        $(".expanded, .collapsed").click(function() {
+          $(this).parent().children(".expanded, .collapsed").toggle();
+        });
+      });
+    </script>
+    </body>
+</html>

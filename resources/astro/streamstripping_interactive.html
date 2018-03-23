@@ -1,0 +1,358 @@
+---
+---
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<style>
+
+table.blueTable {
+  border: 0px solid #1C6EA4;
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+}
+table.blueTable td, table.blueTable th {
+  border: 1px solid #AAAAAA;
+  padding: 3px 2px;
+}
+table.blueTable tbody td {
+  font-size: 13px;
+}
+table.blueTable tr:nth-child(even) {
+  background: #D0E4F5;
+}
+table.blueTable thead {
+  }
+table.blueTable thead th {
+  font-size: 15px;
+  font-weight: bold;
+}
+table.blueTable tfoot td {
+  font-size: 14px;
+}
+table.blueTable tfoot .links {
+  text-align: right;
+}
+table.blueTable tfoot .links a{
+  display: inline-block;
+  background: #1C6EA4;
+  color: #FFFFFF;
+  padding: 2px 8px;
+  border-radius: 5px;
+}
+
+svg {
+  font: 13px sans-serif;
+  padding: 15px;
+}
+
+.axis,
+.frame {
+  shape-rendering: crispEdges;
+}
+
+.axis line {
+  stroke: #ddd;
+}
+
+.axis path {
+  stroke-width: 2px;
+}
+
+.cell text {
+  color: black;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.frame {
+  fill: none;
+  stroke: #aaa;
+}
+
+circle {
+  fill-opacity: .7;
+}
+
+circle.unselected {
+  fill: #ccc !important;
+}
+
+circle.merged {
+  fill: #7570b3;
+}
+
+circle.unmerged {
+  fill: #d95f02;
+}
+
+.extent {
+  fill: #000;
+  fill-opacity: .125;
+  stroke: #fff;
+}
+
+.affix {
+    top:50px;
+    position:fixed;
+}
+
+input[type="text"] {
+  width: 50px;
+}
+
+.topfrac{display:inline-block; float:left}
+.bottomfrac{border-top:solid black 1px;  display:inline-block; clear:left; float:left}
+
+
+
+</style>
+<body>
+
+<div class='container'>
+    <div class="row">
+        <div class="col-sm-3">
+            <form name="input1" onSubmit="return handleClick()">
+                <input name="Submit"  type="submit" value="Set observed value." >
+                <p>LMC HI Mass=4x10^8</p>
+                <p>SMC HI Mass=2x10^8</p>
+                <p>LMC Ionized fraction=<input type="text" id="inputLmcIonized" placeholder="0.4"></p>
+                <p>SMC Ionized fraction=<input type="text" id="inputSmcIonized" placeholder="0.4"></p>
+
+                <p>Stream HI Mass=4x10^8 Msun</p>
+                <p>Stream Ionized Mass=2x10^9 Msun</p>
+                <div class="row">
+                  <div class="col-sm-9">
+                    <p><div class="topfrac">
+                      4x10^8 + 2x10^9
+                      </div>
+                      <div class="bottomfrac">
+                      4x10^8 + 2x10^9 + 4x10^8 + 2x10^8 + <span id='spanLMCIonized'>1.6</span>x10^8
+                      + <span id='spanSMCIonized'>0.8</span>x10^8
+                      </div>
+                    </p></div>
+                    <div class='col-sm-3'>
+                    <p>
+                      =<span id='spanPerc'>20</span>%
+                    </p>
+                    </div>
+                  </div>
+
+            </form>
+
+        </div>
+        <div class="col-sm-6">
+            <p><span id="info"></span></p>
+
+            <table class="blueTable">
+            <thead>
+            <tr>
+            <th>Galaxy</th>
+            <th>Mtot</th>
+            <th>Mstream</th>
+            <th>Mgal</th>
+            <th>Fstripped</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>LMC</td>
+            <td><span id='LMCmtot'></span></td>
+            <td><span id='LMCmstream'></span></td>
+            <td><span id='LMCmgalaxy'></span></td>
+            <td><span id='LMCf'></span></td>
+            </tr>
+            <tr>
+            <td>SMC</td>
+            <td><span id='SMCmtot'></span></td>
+            <td><span id='SMCmstream'></span></td>
+            <td><span id='SMCmgalaxy'></span></td>
+            <td><span id='SMCf'></span></td>
+            </tr>
+            <tr>
+            <td>Total</td>
+            <td><span id='Totalmtot'></span></td>
+            <td><span id='Totalmstream'></span></td>
+            <td><span id='Totalmgalaxy'></span></td>
+            <td><span id='Totalf'></span></td>
+            </tr>
+            </tbody>
+            </table>
+
+        </div>
+    </div>
+    <div class='row'>
+      <div class="col-sm-4">
+          <div id="chart"></div>
+      </div>
+      <div class="col-md-6">
+          <div id='img'></div>
+      </div>
+    </div>
+</div>
+
+<!-- load the d3.js library -->
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<script>
+
+function handleClick(event){
+    valLMCIonized = +document.getElementById("inputLmcIonized").value;
+    valSMCIonized = +document.getElementById("inputSmcIonized").value;
+
+    LMCIonizedMass = valLMCIonized/(1-valLMCIonized)*4;
+    document.getElementById("spanLMCIonized").textContent = LMCIonizedMass;
+
+    SMCIonizedMass = valSMCIonized/(1-valSMCIonized)*2;
+    document.getElementById("spanSMCIonized").textContent = SMCIonizedMass;
+
+    assumedPerc = 100*(4+20)/(4+20+4+2+LMCIonizedMass+SMCIonizedMass);
+
+    console.log(assumedPerc);
+
+    document.getElementById("spanPerc").textContent = assumedPerc;
+
+
+    svg.selectAll('.line')
+       .attr("y1", y(assumedPerc))
+       .attr("y2", y(assumedPerc));
+
+
+    return false;
+}
+
+var assumedPerc = 50;
+
+var data = [{perc: 21.6, ratio: 9, details: "This is the fiducial case.",
+             imgURL: "Magellanic_Stream_9_1.jpeg", table: {'LMC': {'mtot': 12.6, 'mstream': 2.3, 'mgalaxy': 10.3, 'f': 18.0}, 'SMC': {'mtot': 5.4, 'mstream': 1.6, 'mgalaxy': 3.8, 'f': 29.8}, 'Total': {'mtot': 17.9, 'mstream': 3.9, 'mgalaxy': 14.0, 'f': 21.6}}},
+            {perc: 17.8, ratio: 7, details: "These are some details about 7:1",
+             imgURL: "Magellanic_Stream_7_1.jpeg", table: {'LMC': {'mtot': 6.7, 'mstream': 0.2, 'mgalaxy': 6.5, 'f': 2.7}, 'SMC': {'mtot': 3.5, 'mstream': 1.6, 'mgalaxy': 1.9, 'f': 46.8}, 'Total': {'mtot': 10.1, 'mstream': 1.8, 'mgalaxy': 8.3, 'f': 17.8}}},
+            {perc: 10.0, ratio: 5, details: "These are some details about 5:1",
+             imgURL: "Magellanic_Stream_5_1.jpeg", table: {'LMC': {'mtot': 5.7, 'mstream': 0.3, 'mgalaxy': 5.4, 'f': 5.7}, 'SMC': {'mtot': 4.9, 'mstream': 0.7, 'mgalaxy': 4.1, 'f': 15.1}, 'Total': {'mtot': 10.6, 'mstream': 1.1, 'mgalaxy': 9.5, 'f': 10.0}}},
+            {perc: 20.9, ratio: 3, details: "These are some details about 3:1",
+             imgURL: "Magellanic_Stream_3_1.jpeg", table: {'LMC': {'mtot': 5.4, 'mstream': 0.2, 'mgalaxy': 5.1, 'f': 4.2}, 'SMC': {'mtot': 9.9, 'mstream': 3.0, 'mgalaxy': 6.9, 'f': 29.9}, 'Total': {'mtot': 15.3, 'mstream': 3.2, 'mgalaxy': 12.1, 'f': 20.9}}}
+            ]
+
+//svgImg.select("image").attr("xlink:href", url);
+
+// set the dimensions and margins of the graph
+var imgWidth = 687;
+var imgHeight = 221;
+
+var margin = {top: 40, right: 20, bottom: 50, left: 60},
+    width = 250 - margin.left - margin.right,
+    height = 250 - margin.top - margin.bottom,
+    sideWidth = 100 - margin.left - margin.right,
+    sideHeight = 250 - margin.top - margin.bottom,
+    padding = 40;
+
+var svgImg = d3.select('#img')
+            .append('svg')
+            .attr('height', imgHeight+margin.top+margin.bottom)
+            .attr('width', imgWidth+margin.left+margin.right);
+
+var gImg = svgImg.append('g');
+
+var imgs = gImg.append("svg:image")
+               .attr('x', 0)
+               .attr('y', 0)
+               .attr('width', imgWidth)
+               .attr('height', imgHeight);
+
+var svg = d3.select("#chart")
+            .classed("svg-container", true)
+            .append("svg")
+            .attr("preserveAspectRatio", "xMinYMin meet")
+            .attr("viewBox", "0 0 "+ (width + margin.left + margin.right) +
+                  " " + (height + margin.top + margin.bottom))
+            .classed("svg-content-responsive", true)
+          .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var x = d3.scaleLinear()
+          .range([0, width])
+          .domain([2, 10]);
+
+var y = d3.scaleLinear()
+          .range([height, 0])
+          .domain([0, 60]);
+
+var xAxis = d3.axisBottom(x)
+              .tickValues([3, 5, 7, 9]);
+
+var yAxis = d3.axisLeft(y)
+              .ticks(6);
+
+var obsLine = svg.append("line")
+                 .attr("class", 'line')
+                 .attr("x1", 0)
+                 .attr("y1", y(assumedPerc))
+                 .attr("x2", width)
+                 .attr("y2", y(assumedPerc))
+                 .attr("stroke-width", 1)
+                 .style("stroke-dasharray", ("3, 3"))
+                 .attr("stroke", "black");
+
+svg.append("rect")
+    .attr("class", "frame")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", width)
+    .style('pointer-events', 'none')
+    .attr("height", height);
+
+svg.append("g")
+          .attr("class", "y axis")
+          .call(yAxis);
+
+svg.append("g")
+  .attr("class", "x axis")
+  .attr("transform", "translate(0 ," + (height) +  ")")
+  .call(xAxis);
+
+  svg.append("text")
+      .attr("class", "y label")
+      .attr("dy", "1em")
+      .attr("transform", function(d, i){return "translate(" +
+                                        (-margin.left) + ","+
+                                        (height/2) + ")rotate(-90)";})
+      .style("text-anchor", "middle")
+      .style("Font-size", "12px")
+      .style("fill", "black")
+      .text("Percentage Gas Remove");
+
+svg.append("text")             // text label for the x axis
+    .attr("class", "x label")
+    .attr("transform",
+            "translate(" + (width/2) + " ," +
+                           (height + margin.top) + ")")
+    .style("text-anchor", "middle")
+    .style("Font-size", "12px")
+    .style("fill", "black")
+    .text("LMC-SMC Mass Ratio");
+
+var circles = svg.selectAll("circle")
+                 .data(data)
+                 .enter().append("circle")
+                         .attr("cx", function(d) { return x(d.ratio); })
+                         .attr("cy", function(d) { return y(d.perc); })
+                         .attr("r",  2)
+                         .on('click', function(d){
+                            span = document.getElementById('info');
+                            span.textContent = d.details;
+                            d3.entries(d.table).forEach(function(d1){
+                              key = d1.key;
+                              d3.entries(d1.value).forEach(function(d2){
+                                span = document.getElementById(key+d2.key);
+                                span.textContent = d2.value;
+                              })
+                            });
+                            svgImg.select("image").attr("xlink:href", d.imgURL);
+                        });
+
+
+</script>
+
+</body>
