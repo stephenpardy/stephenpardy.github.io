@@ -1,0 +1,84 @@
+[
+{
+    "name": "Magellanic Stream",
+    "picture": {
+        "url": "MagellanicStream.png",
+        "description": "The present day distribution of gas in the Magellanic Stream from one of our simulations and in the HI gas of Nidever et al. 2010."
+    },
+    "id": "Stream",
+    "short": "Multiple Filaments in the Magellanic Stream",
+    "long": ["Some of my current work focuses on the interaction between the Large and Small Magellanic Clouds. My simulations explore how this interaction formed the complex and extensive stream of HI gas seen around the Clouds."],
+    "papers": [{
+        "href": "https://arxiv.org/abs/1802.01600",
+        "linktext": "arxiv/1802.01600"
+    }],
+    "interactive": "stream_stripping.html"
+},
+{
+    "name": "Magellanic Galaxies",
+    "picture": {
+        "url": "Magellanic.png",
+        "description": "A simulation of a recently disrupted galaxy modeled after the LMC. The colors represent surface density of stars."
+    },
+    "id": "Magellanics",
+    "short": "Asymmetries in Magellanic Galaxies",
+    "long": ["As part of my thesis project, I examined the role of interactions in causing the asymmetries in Magellanic Galaxies.
+                We discovered that tidally induced asymmetric-disks can masquerade as offset bars in Magellanic Galaxies.",
+                "We use a custom version of the <a href='http://www.h-its.org/english/research/tap/galic/'>GalIC</a> code to simulate isolated galaxies and evolve encounters with Gadget 3."
+    ],
+    "papers": [{
+        "href": "http://arxiv.org/abs/1602.07689",
+        "linktext": "arxiv/1602.07689"
+    }],
+    "interactive": "mag_irregulars.html"
+},
+{
+    "name": "Chemical Tagging",
+    "picture": {
+        "url": "ChemTagging.png",
+        "description": "Stars from known globular clusters in chemical space."
+    },
+    "id": "ChemTagging",
+    "short": "Chemical Tagging",
+    "long": ["Understanding where stars are born is a fundamental problem for astrophysics. This project used detailed chemical data from the APOGEE survey of more than 100,000 stars in the Milky Way to determine if there were statistically significant groups of stars that may have been born together."],
+    "papers": [{
+        "href": "https://arxiv.org/abs/1709.03987",
+        "linktext": "arxiv/1709.03987"
+    }],
+    "interactive": "chemical_tagging.html"
+},
+{
+    "name": "Tidal Streams",
+    "picture": {
+        "url": "isima_tail.png",
+        "description": "A model of the Milky Way with our best fit stream model for NGC 5466 in red."
+    },
+    "id": "ISIMA",
+    "short": "Tidal Streams as a Probe of Dark Matter",
+    "long": ["As a 2014 fellow at the <a href='http://isima.ucsc.edu/'>International Summer Institute for Modeling in Astrophysics</a>, I worked with Andreas Küpper on modeling the tidal stream of NGC 5466. Tidal streams act as unique probes of the dark matter halo of their environments. This work, along with new data from Jay Strader, will place strong contraints on the shape and total mass of the Milky Way. We use a Markov chain Monte Carlo to probe parameter space, where the likelihood function is drawn in real time from very efficient restricted N-Body simulations of the globular cluster in our test potential."],
+    "paper": null,
+    "interactive": null
+},
+{
+    "name": "Lyman Alpha Reference Sample",
+    "picture": {
+        "url": "lars.png",
+        "description": "HI contours on DSS image of interacting galaxies LARS 03 (Arp 238)."
+    },
+    "id": "LARS",
+    "short": "LARS and eLARS",
+    "long": ["The Lyman Alpha Reference Sample (LARS) is a large Hubble project and international collaboration testing the escape of Lyman Alpha photons from distant galaxies.",
+        "LARS utilizes almost the entire electromagnetic spectrum: from UV and optical spectra that reveal intense star formation, to radio observations that probe the neutral hydrogen and molecular gas content. The survey started with 14 galaxies and 28 more have now been added through e(xtended)LARS. We have conducted HI observations using the GBT, VLA, and GMRT of all 14 LARS galaxies and many of the 28 eLARS.",
+        "In 2014, we released the results for the first 14 galaxies. A few years later we added to this by carrying out similar measurements on a strange galaxy (Haro 11) that emits lots of Lyman Alpha and Lyman Continuum emission."
+    ],
+    "papers": [{
+        "href": "https://arxiv.org/abs/1408.6275",
+        "linktext": "arxiv/1408.6275"
+    },
+    {
+        "href": "https://arxiv.org/abs/1609.04020",
+        "linktext": "arxiv/1609.04020"
+    }],
+    "interactive": null
+}
+]
