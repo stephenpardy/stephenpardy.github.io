@@ -115,43 +115,30 @@ input[type="text"] {
         <div class="col-sm-3">
             <form name="input1" onSubmit="return handleClick()">
                 <input name="Submit"  type="submit" value="Set observed value." >
-                <p>LMC HI Mass=4x10^8</p>
-                <p>SMC HI Mass=2x10^8</p>
-                <p>LMC Ionized fraction=<input type="text" id="inputLmcIonized" placeholder="0.4"></p>
-                <p>SMC Ionized fraction=<input type="text" id="inputSmcIonized" placeholder="0.4"></p>
-
+                <p>LMC HI Mass=4x10^8 Msun</p>
+                <p>SMC HI Mass=2x10^8 Msun</p>
                 <p>Stream HI Mass=4x10^8 Msun</p>
                 <p>Stream Ionized Mass=2x10^9 Msun</p>
-                <div class="row">
-                  <div class="col-sm-9">
-                    <p><div class="topfrac">
-                      4x10^8 + 2x10^9
-                      </div>
-                      <div class="bottomfrac">
-                      4x10^8 + 2x10^9 + 4x10^8 + 2x10^8 + <span id='spanLMCIonized'>1.6</span>x10^8
-                      + <span id='spanSMCIonized'>0.8</span>x10^8
-                      </div>
-                    </p></div>
-                    <div class='col-sm-3'>
-                    <p>
-                      =<span id='spanPerc'>20</span>%
-                    </p>
-                    </div>
-                  </div>
+
+                <p>LMC Ionized fraction=<input type="text" id="inputLmcIonized" placeholder="0.8"></p>
+
+                <p>SMC Ionized fraction=<input type="text" id="inputSmcIonized" placeholder="0.8"></p>
+                <p>These ionization fractions give an LMC Ionized Mass of <span id='spanLMCIonized'>16.0</span>x10^8 Msun an SMC Ionized Mass of <span id='spanSMCIonized'>8.0</span>x10^8 Msun and a stripping percentage of <span id='spanPerc'>44.4</span>%.</p>
 
             </form>
 
         </div>
         <div class="col-sm-6">
+          <div class='row'>
             <p><span id="info"></span></p>
 
             <table class="blueTable">
             <thead>
             <tr>
             <th>Galaxy</th>
-            <th>Mtot</th>
-            <th>Mstream</th>
-            <th>Mgal</th>
+            <th>Mtot (x10^8 Msun)</th>
+            <th>Mstream (x10^8 Msun)</th>
+            <th>Mgal (x10^8 Msun)</th>
             <th>Fstripped</th>
             </tr>
             </thead>
@@ -179,15 +166,15 @@ input[type="text"] {
             </tr>
             </tbody>
             </table>
-
+            </div>
+            <div class="row">
+              <div id='img'></div>
+            </div>
         </div>
     </div>
     <div class='row'>
       <div class="col-sm-4">
           <div id="chart"></div>
-      </div>
-      <div class="col-md-6">
-          <div id='img'></div>
       </div>
     </div>
 </div>
@@ -198,40 +185,42 @@ input[type="text"] {
 
 <script>
 
+var f2 = d3.format(".2f");
+
 function handleClick(event){
     valLMCIonized = +document.getElementById("inputLmcIonized").value;
     valSMCIonized = +document.getElementById("inputSmcIonized").value;
 
     LMCIonizedMass = valLMCIonized/(1-valLMCIonized)*4;
-    document.getElementById("spanLMCIonized").textContent = LMCIonizedMass;
+    document.getElementById("spanLMCIonized").textContent = f2(LMCIonizedMass);
 
     SMCIonizedMass = valSMCIonized/(1-valSMCIonized)*2;
-    document.getElementById("spanSMCIonized").textContent = SMCIonizedMass;
+    document.getElementById("spanSMCIonized").textContent = f2(SMCIonizedMass);
 
     assumedPerc = 100*(4+20)/(4+20+4+2+LMCIonizedMass+SMCIonizedMass);
 
-    console.log(assumedPerc);
-
-    document.getElementById("spanPerc").textContent = assumedPerc;
-
+    document.getElementById("spanPerc").textContent = f2(assumedPerc);
 
     svg.selectAll('.line')
        .attr("y1", y(assumedPerc))
-       .attr("y2", y(assumedPerc));
+       .attr("y2", y(assumedPerc))
+       .attr("stroke-width", function(){ if (assumedPerc <= 60) {
+                                          return 1;} else {return 0;
+                                          } });
 
 
     return false;
 }
 
-var assumedPerc = 50;
+var assumedPerc = 44.4;
 
-var data = [{perc: 21.6, ratio: 9, details: "This is the fiducial case.",
+var data = [{perc: 21.6, ratio: 9, details: "This is the fiducial case. The mass ratio is kept relatively high, but the disk of the LMC is extended to make stripping easier. The interaction strips material from both Clouds.",
              imgURL: "Magellanic_Stream_9_1.jpeg", table: {'LMC': {'mtot': 12.6, 'mstream': 2.3, 'mgalaxy': 10.3, 'f': 18.0}, 'SMC': {'mtot': 5.4, 'mstream': 1.6, 'mgalaxy': 3.8, 'f': 29.8}, 'Total': {'mtot': 17.9, 'mstream': 3.9, 'mgalaxy': 14.0, 'f': 21.6}}},
-            {perc: 17.8, ratio: 7, details: "These are some details about 7:1",
+            {perc: 17.8, ratio: 7, details: "This lower mass ratio case serves as an alternative scenario to the extended disk case. We also strip material from both Clouds.",
              imgURL: "Magellanic_Stream_7_1.jpeg", table: {'LMC': {'mtot': 6.7, 'mstream': 0.2, 'mgalaxy': 6.5, 'f': 2.7}, 'SMC': {'mtot': 3.5, 'mstream': 1.6, 'mgalaxy': 1.9, 'f': 46.8}, 'Total': {'mtot': 10.1, 'mstream': 1.8, 'mgalaxy': 8.3, 'f': 17.8}}},
-            {perc: 10.0, ratio: 5, details: "These are some details about 5:1",
+            {perc: 10.0, ratio: 5, details: "At this intermediate mass ratio, the Clouds are both heavily stripped, but also merge before the present day.",
              imgURL: "Magellanic_Stream_5_1.jpeg", table: {'LMC': {'mtot': 5.7, 'mstream': 0.3, 'mgalaxy': 5.4, 'f': 5.7}, 'SMC': {'mtot': 4.9, 'mstream': 0.7, 'mgalaxy': 4.1, 'f': 15.1}, 'Total': {'mtot': 10.6, 'mstream': 1.1, 'mgalaxy': 9.5, 'f': 10.0}}},
-            {perc: 20.9, ratio: 3, details: "These are some details about 3:1",
+            {perc: 20.9, ratio: 3, details: "The stellar mass ratio between the Clouds is 3:1. At this mass ratio that collision is almost a major merger and the Clouds merge relatively rapidly.",
              imgURL: "Magellanic_Stream_3_1.jpeg", table: {'LMC': {'mtot': 5.4, 'mstream': 0.2, 'mgalaxy': 5.1, 'f': 4.2}, 'SMC': {'mtot': 9.9, 'mstream': 3.0, 'mgalaxy': 6.9, 'f': 29.9}, 'Total': {'mtot': 15.3, 'mstream': 3.2, 'mgalaxy': 12.1, 'f': 20.9}}}
             ]
 
@@ -250,8 +239,8 @@ var margin = {top: 40, right: 20, bottom: 50, left: 60},
 
 var svgImg = d3.select('#img')
             .append('svg')
-            .attr('height', imgHeight+margin.top+margin.bottom)
-            .attr('width', imgWidth+margin.left+margin.right);
+            .attr('height', imgHeight)
+            .attr('width', imgWidth);
 
 var gImg = svgImg.append('g');
 
@@ -259,7 +248,7 @@ var imgs = gImg.append("svg:image")
                .attr('x', 0)
                .attr('y', 0)
                .attr('width', imgWidth)
-               .attr('height', imgHeight);
+               .attr('height', imgHeight-margin.top);
 
 var svg = d3.select("#chart")
             .classed("svg-container", true)

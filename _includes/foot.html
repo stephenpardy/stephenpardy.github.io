@@ -18,16 +18,44 @@
         </div>
 
         </footer>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-        <script src="/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+    <!-- CDN with local fallback: http://stackoverflow.com/a/26198380  -->
+    <!-- jQuery CDN -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <!-- jQuery local fallback -->
+    <script>window.jQuery || document.write('<script src="{{ site.baseurl }}/js/jquery.js"><\/script>')</script>
+    <!-- Bootstrap JS CDN -->
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <!-- Bootstrap JS local fallback -->
+    <script>if(typeof($.fn.modal) === 'undefined') {document.write('<script src="{{ site.baseurl }}/js/bootstrap.min.js"><\/script>')}</script>
+    <!-- Bootstrap CSS local fallback -->
     <script>
       $(document).ready(function() {
+        // function for et al expansion
         $(".expanded").hide();
 
         $(".expanded, .collapsed").click(function() {
           $(this).parent().children(".expanded, .collapsed").toggle();
         });
+        // and to sort out papers
+        // first hide all
+        $(".paperEntry").hide();
+        // and unhide selected papers
+        $(".paperEntry.selectedPaper").toggle();
+
+        $("#selectedButton").click(function() {
+            $(".paperEntry").hide();
+            $(".paperEntry.selectedPaper").toggle();
+        });
+
+        $("#firstauthorButton").click(function() {
+            $(".paperEntry").hide();
+            $(".paperEntry.firstauthor").toggle();
+        });
+
+        $("#allButton").click(function() {
+            $(".paperEntry").show();
+        });
+
       });
     </script>
-    </body>
 </html>
