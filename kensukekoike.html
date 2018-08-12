@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+
+</head>
+
+<body>
+
+<input type="file" id="imageLoader" name="imageLoader"/>
+<canvas id="originalImage" width="300" height="300"></canvas>
+
+<canvas id="newImage" width="300" height="300"></canvas>
+
+<form onsubmit="handleSubmit()">
+  Width/height: <input id='h' type="text">
+  stride: <input  id='stride' type="text">
+  n: <input  id='n' type="text">
+  m: <input  id='m' type="text">
+  x_offset: <input  id='x_offset' type="text">
+  y_offset: <input  id='y_offset' type="text">
+  <input type="submit">
+</form>
+
+<script type="text/javascript">
+
+//https://stackoverflow.com/a/10906961
+
+var imageLoader = document.getElementById('imageLoader');
+    imageLoader.addEventListener('change', handleImage, false);
+var canvas = document.getElementById('originalImage');
+var ctx = canvas.getContext('2d');
+
+var canvas_new = document.getElementById('newImage');
+var ctx_new = canvas_new.getContext('2d');
+
+var originalImageData = null;
+
+function handleImage(e){
+    var reader = new FileReader();
+    reader.onload = function(event){
+        var img = new Image();
+        img.onload = function(){
+
+            ctx.drawImage(img, 0, 0);
+            img.style.display = 'none';
+            originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        }
+        img.src = event.target.result;
+    }
+    reader.readAsDataURL(e.target.files[0]);
+}
+
+
+function handleSubmit(){
+    event.preventDefault();
+    var h = parseInt(document.getElementById("h").value);
+    var stride = parseInt(document.getElementById("stride").value);
+    var n = parseInt(document.getElementById("n").value);
+    var m = parseInt(document.getElementById("m").value);
+    var x_offset = parseInt(document.getElementById("x_offset").value);
+    var y_offset = parseInt(document.getElementById("y_offset").value);
+    cutout(h, stride, n, m, x_offset, y_offset);
+}
+
+//https://gist.github.com/jxnl/bedfa2382ec1d9faa44aee95fda81127
+function cutout(h, stride, n, m, x_offset, y_offset){
+
+/*
+    h: height and width of box
+    n: number of columns
+    m: number of rows
+    x_offset:
+    y_offset:
+*/
+    w = h;
+
+    for (var i=0; i<n; i++){
+        for (var j=0; j<m; j++){
+            x_o = x_offset + (h + stride) * i
+            y_o = y_offset + (w + stride) * j
+
+            // Copy into new image
+            var pixels = ctx.getImageData(x_o, y_o, h, h);
+            pixeldata = pixels.data;
+
+            ctx_new.putImageData(pixels, w*i, h*j);
+
+            // White out old image
+
+            for (var channel = 0; channel < pixeldata.length; channel++) {
+                pixeldata[channel] = 255;
+            }
+            console.log(pixels);
+
+            ctx.putImageData(pixels, x_o, y_o);
+
+        }
+    }
+
+}
+/*
+function reset(){
+    ctx.putImageData(originalImageData, 0, 0);
+    //ctx_new.putImageData(pixels, w*i, h*j);
+}
+*/
+</script>
+
+</body>
+</html>
