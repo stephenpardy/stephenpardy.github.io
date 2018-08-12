@@ -15,30 +15,37 @@
 
 <div class='container'>
     <div class="row">
-        <div class='col-md-6'>
-            <div><p>Height/Width=<span  id='hText'></span></p>
+        <div class='col-md-4'>
+            <div><p>Height=<span  id='hText'></span></p>
                 <input type="range" min="1" max="100" value="10" step="1" class="slider" id="hSlider">
             </div>
+
+            <div><p>Width=<span  id='wText'></span> -- Fix to height<input type="checkbox" id="fixWidth" onclick="fixWidth()" checked></p>
+                <input type="range" min="1" max="100" value="10" step="1" class="slider" id="wSlider">
+            </div>
+        </div>
+        <div class='col-md-4'>
             <div><p>Stride=<span  id='strideText'></span></p>
                 <input type="range" min="1" max="100" value="20" step="1" class="slider" id="strideSlider">
             </div>
             <div><p>n=<span  id='nText'></span></p>
                 <input type="range" min="1" max="50" value="10" step="1" class="slider" id="nSlider">
             </div>
-        </div>
-        <div class='col-md-6'>
             <div><p>m=<span  id='mText'></span></p>
                 <input type="range" min="1" max="50" value="10" step="1" class="slider" id="mSlider">
             </div>
+        </div>
+        <div class='col-md-4'>
             <div><p>X offset=<span  id='x_offsetText'></span></p>
-                <input type="range" min="1" max="300" value="0" step="1" class="slider" id="x_offsetSlider">
+                <input type="range" min="0" max="300" value="0" step="1" class="slider" id="x_offsetSlider">
             </div>
             <div><p>y offset=<span  id='y_offsetText'></span></p>
-                <input type="range" min="1" max="300" value="0" step="1" class="slider" id="y_offsetSlider">
+                <input type="range" min="0" max="300" value="0" step="1" class="slider" id="y_offsetSlider">
             </div>
         </div>
-        <button type='button' onclick='cutout();'>Kensukekoike</button>
     </div>
+        <button type='button' onclick='cutout();'>Kensukekoike</button>
+
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -63,16 +70,23 @@ function handleImage(e){
         var img = new Image();
         img.onload = function(){
 
-            ctx.drawImage(img, 0, 0);
+            ctx.drawImage(img, 0, 0, 300, 300);
             img.style.display = 'none';
             originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
             hSlider.disabled = false;
+
+            if (!fixWidthToHeight){
+                wSlider.disabled = false;
+            }
+
             strideSlider.disabled = false;
             mSlider.disabled = false;
             nSlider.disabled = false;
             x_offsetSlider.disabled = false;
             y_offsetSlider.disabled = false;
+            document.getElementById("fixWidth").disabled = false;
+            loaded = true;
 
         }
         img.src = event.target.result;
@@ -84,22 +98,13 @@ function handleImage(e){
 function cutout(){
     reset();
 
-/*
-    h: height and width of box
-    n: number of columns
-    m: number of rows
-    x_offset:
-    y_offset:
-*/
-    w = h;
-
     for (var i=0; i<n; i++){
         for (var j=0; j<m; j++){
-            x_o = x_offset + (h + stride) * i
-            y_o = y_offset + (w + stride) * j
+            x_o = x_offset + (w + stride) * i
+            y_o = y_offset + (h + stride) * j
 
             // Copy into new image
-            var pixels = ctx.getImageData(x_o, y_o, h, h);
+            var pixels = ctx.getImageData(x_o, y_o, w, h);
             pixeldata = pixels.data;
 
             ctx_new.putImageData(pixels, w*i, h*j);
@@ -116,6 +121,18 @@ function cutout(){
 
 }
 
+var loaded = false;
+var fixWidthToHeight = true;
+
+document.getElementById('fixWidth').disabled = true;
+
+function fixWidth(){
+    w = h;
+
+    fixWidthToHeight = !fixWidthToHeight;
+    wSlider.disabled = !wSlider.disabled;
+}
+
 // handle sliders
 
 var hSlider = document.getElementById("hSlider");
@@ -127,8 +144,24 @@ hSlider.disabled = true;
 hSlider.oninput = function() {
     hText.innerHTML = this.value;
     h = parseInt(hSlider.value);
+    if (fixWidthToHeight){
+        w = h;
+    }
     cutout();
 }
+
+var wSlider = document.getElementById("wSlider");
+var wText = document.getElementById("wText");
+wText.innerHTML = wSlider.value;
+var w = parseInt(wSlider.value);
+wSlider.disabled = true;
+
+wSlider.oninput = function() {
+    wText.innerHTML = this.value;
+    w = parseInt(wSlider.value);
+    cutout();
+}
+
 
 var strideSlider = document.getElementById("strideSlider");
 var strideText = document.getElementById("strideText");
