@@ -65,6 +65,7 @@ function handleSubmit(){
 
 //https://gist.github.com/jxnl/bedfa2382ec1d9faa44aee95fda81127
 function cutout(h, stride, n, m, x_offset, y_offset){
+    reset();
 
 /*
     h: height and width of box
@@ -87,11 +88,9 @@ function cutout(h, stride, n, m, x_offset, y_offset){
             ctx_new.putImageData(pixels, w*i, h*j);
 
             // White out old image
-
-            for (var channel = 0; channel < pixeldata.length; channel++) {
-                pixeldata[channel] = 255;
+            for (var pixel = 0; pixel < pixeldata.length; pixel++) {
+                pixeldata[pixel] = 255;
             }
-            console.log(pixels);
 
             ctx.putImageData(pixels, x_o, y_o);
 
@@ -99,12 +98,12 @@ function cutout(h, stride, n, m, x_offset, y_offset){
     }
 
 }
-/*
+
 function reset(){
     ctx.putImageData(originalImageData, 0, 0);
-    //ctx_new.putImageData(pixels, w*i, h*j);
+    ctx_new.putImageData(ctx_new.createImageData(300, 300), 0, 0);
 }
-*/
+
 </script>
 
 </body>
