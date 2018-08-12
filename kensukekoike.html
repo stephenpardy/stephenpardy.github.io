@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<link href="/bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
 
@@ -12,15 +13,35 @@
 
 <canvas id="newImage" width="300" height="300"></canvas>
 
-<form onsubmit="handleSubmit()">
-  Width/height: <input id='h' type="text">
-  stride: <input  id='stride' type="text">
-  n: <input  id='n' type="text">
-  m: <input  id='m' type="text">
-  x_offset: <input  id='x_offset' type="text">
-  y_offset: <input  id='y_offset' type="text">
-  <input type="submit">
-</form>
+<div class='container'>
+    <div class="row">
+        <div class='col-md-6'>
+            <div><p>Height/Width=<span  id='hText'></span></p>
+                <input type="range" min="1" max="100" value="10" step="1" class="slider" id="hSlider">
+            </div>
+            <div><p>Stride=<span  id='strideText'></span></p>
+                <input type="range" min="1" max="100" value="20" step="1" class="slider" id="strideSlider">
+            </div>
+            <div><p>n=<span  id='nText'></span></p>
+                <input type="range" min="1" max="50" value="10" step="1" class="slider" id="nSlider">
+            </div>
+        </div>
+        <div class='col-md-6'>
+            <div><p>m=<span  id='mText'></span></p>
+                <input type="range" min="1" max="50" value="10" step="1" class="slider" id="mSlider">
+            </div>
+            <div><p>X offset=<span  id='x_offsetText'></span></p>
+                <input type="range" min="1" max="300" value="0" step="1" class="slider" id="x_offsetSlider">
+            </div>
+            <div><p>y offset=<span  id='y_offsetText'></span></p>
+                <input type="range" min="1" max="300" value="0" step="1" class="slider" id="y_offsetSlider">
+            </div>
+        </div>
+        <button type='button' onclick='cutout();'>Kensukekoike</button>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
 <script type="text/javascript">
 
@@ -45,26 +66,22 @@ function handleImage(e){
             ctx.drawImage(img, 0, 0);
             img.style.display = 'none';
             originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+            hSlider.disabled = false;
+            strideSlider.disabled = false;
+            mSlider.disabled = false;
+            nSlider.disabled = false;
+            x_offsetSlider.disabled = false;
+            y_offsetSlider.disabled = false;
+
         }
         img.src = event.target.result;
     }
     reader.readAsDataURL(e.target.files[0]);
 }
 
-
-function handleSubmit(){
-    event.preventDefault();
-    var h = parseInt(document.getElementById("h").value);
-    var stride = parseInt(document.getElementById("stride").value);
-    var n = parseInt(document.getElementById("n").value);
-    var m = parseInt(document.getElementById("m").value);
-    var x_offset = parseInt(document.getElementById("x_offset").value);
-    var y_offset = parseInt(document.getElementById("y_offset").value);
-    cutout(h, stride, n, m, x_offset, y_offset);
-}
-
 //https://gist.github.com/jxnl/bedfa2382ec1d9faa44aee95fda81127
-function cutout(h, stride, n, m, x_offset, y_offset){
+function cutout(){
     reset();
 
 /*
@@ -99,12 +116,88 @@ function cutout(h, stride, n, m, x_offset, y_offset){
 
 }
 
+// handle sliders
+
+var hSlider = document.getElementById("hSlider");
+var hText = document.getElementById("hText");
+hText.innerHTML = hSlider.value;
+var h = parseInt(hSlider.value);
+hSlider.disabled = true;
+
+hSlider.oninput = function() {
+    hText.innerHTML = this.value;
+    h = parseInt(hSlider.value);
+    cutout();
+}
+
+var strideSlider = document.getElementById("strideSlider");
+var strideText = document.getElementById("strideText");
+strideText.innerHTML = strideSlider.value;
+var stride = parseInt(strideSlider.value);
+strideSlider.disabled = true;
+
+strideSlider.oninput = function(){
+    strideText.innerHTML = this.value;
+    stride = parseInt(strideSlider.value);
+    cutout();
+}
+
+var mSlider = document.getElementById("mSlider");
+var mText = document.getElementById("mText");
+mText.innerHTML = mSlider.value;
+var m = parseInt(mSlider.value);
+mSlider.disabled = true;
+
+mSlider.oninput = function(){
+    mText.innerHTML = this.value;
+    m = parseInt(mSlider.value);
+    cutout();
+}
+
+var nSlider = document.getElementById("nSlider");
+var nText = document.getElementById("nText");
+nText.innerHTML = nSlider.value;
+var n = parseInt(nSlider.value);
+nSlider.disabled = true;
+
+nSlider.oninput = function(){
+    nText.innerHTML = this.value;
+    n = parseInt(nSlider.value);
+    cutout();
+}
+
+var x_offsetSlider = document.getElementById("x_offsetSlider");
+var x_offsetText = document.getElementById("x_offsetText");
+x_offsetText.innerHTML = x_offsetSlider.value;
+var x_offset = parseInt(x_offsetSlider.value);
+x_offsetSlider.disabled = true;
+
+x_offsetSlider.oninput = function(){
+    x_offsetText.innerHTML = this.value;
+    x_offset = parseInt(x_offsetSlider.value);
+    cutout();
+}
+
+var y_offsetSlider = document.getElementById("y_offsetSlider");
+var y_offsetText = document.getElementById("y_offsetText");
+y_offsetText.innerHTML = y_offsetSlider.value;
+var y_offset = parseInt(y_offsetSlider.value);
+y_offsetSlider.disabled = true;
+
+y_offsetSlider.oninput = function(){
+    y_offsetText.innerHTML = this.value;
+    y_offset = parseInt(y_offsetSlider.value);
+    cutout();
+}
+
+
 function reset(){
     ctx.putImageData(originalImageData, 0, 0);
     ctx_new.putImageData(ctx_new.createImageData(300, 300), 0, 0);
 }
 
 </script>
+<script src="/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
 
 </body>
 </html>
