@@ -19,10 +19,10 @@
         <div class='col-md-6'>
 
             <input type="file" id="imageLoader" name="imageLoader"/>
-            <canvas id="originalImage" width="300" height="300"></canvas>
+            <canvas id="originalImage" width="500" height="500"></canvas>
         </div>
         <div class='col-md-6'>
-            <canvas id="newImage" width="300" height="300"></canvas>
+            <canvas id="newImage" width="500" height="500"></canvas>
         </div>
 
     </div>
@@ -90,9 +90,30 @@ function handleImage(e){
         var img = new Image();
         img.onload = function(){
 
-            ctx.drawImage(img, 0, 0, 300, 300);
+            max_size = 500.;
+            height = img.height;
+            width = img.width;
+            frac = 1.
+            if (height > width){
+                if (height > max_size){
+                    frac = height/max_size
+                }
+
+            } else if (width > height){
+                if (width > max_size){
+                    frac = width/max_size
+                }
+            } else { // equal
+                if (height > max_size){
+                    frac = height/max_size
+                }
+            }
+            new_height = height/frac
+            new_width = width/frac
+
+            ctx.drawImage(img, 0, 0, new_width, new_height);
             img.style.display = 'none';
-            originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            originalImageData = ctx.getImageData(0, 0, new_width, new_height);
 
             hSlider.disabled = false;
 
@@ -264,7 +285,7 @@ y_offsetSlider.oninput = function(){
 
 function reset(){
     ctx.putImageData(originalImageData, 0, 0);
-    ctx_new.putImageData(ctx_new.createImageData(300, 300), 0, 0);
+    ctx_new.putImageData(ctx_new.createImageData(500, 500), 0, 0);
 }
 
 </script>
