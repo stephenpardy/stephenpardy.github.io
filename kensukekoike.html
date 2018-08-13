@@ -90,6 +90,9 @@ function handleImage(e){
         var img = new Image();
         img.onload = function(){
 
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx_new.clearRect(0, 0, canvas_new.width, canvas_new.height);
+
             max_size = 500.;
             height = img.height;
             width = img.width;
@@ -285,7 +288,8 @@ y_offsetSlider.oninput = function(){
 
 function reset(){
     ctx.putImageData(originalImageData, 0, 0);
-    ctx_new.putImageData(ctx_new.createImageData(500, 500), 0, 0);
+    ctx_new.clearRect(0, 0, canvas_new.width, canvas_new.height);
+    //ctx_new.putImageData(ctx_new.createImageData(500, 500), 0, 0);
 }
 
 </script>
