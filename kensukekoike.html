@@ -8,12 +8,30 @@
 
 <body>
 
-<input type="file" id="imageLoader" name="imageLoader"/>
-<canvas id="originalImage" width="300" height="300"></canvas>
-
-<canvas id="newImage" width="300" height="300"></canvas>
-
 <div class='container'>
+
+    <div class='row'>
+        <h2>KensukeKoikeScript</h2>
+        <p>Quickly generate images in the style of <a href='https://www.kensukekoike.com/'>Kensuke Koike</a></p>
+    </div>
+
+    <div class="row">
+        <div class='col-md-6'>
+
+            <input type="file" id="imageLoader" name="imageLoader"/>
+            <canvas id="originalImage" width="300" height="300"></canvas>
+        </div>
+        <div class='col-md-6'>
+            <canvas id="newImage" width="300" height="300"></canvas>
+        </div>
+
+    </div>
+
+
+    <div class='row'>
+        Live update: <input type="checkbox" id="togglePreview" onclick="togglePreview()" checked>
+    </div>
+
     <div class="row">
         <div class='col-md-4'>
             <div><p>Height=<span  id='hText'></span></p>
@@ -44,7 +62,7 @@
             </div>
         </div>
     </div>
-        <button type='button' onclick='cutout();'>Kensukekoike</button>
+        <button type='button' onclick='cutout();'>Generate</button>
 
 </div>
 
@@ -53,6 +71,8 @@
 <script type="text/javascript">
 
 //https://stackoverflow.com/a/10906961
+
+var updateOnSlide = true;
 
 var imageLoader = document.getElementById('imageLoader');
     imageLoader.addEventListener('change', handleImage, false);
@@ -133,6 +153,10 @@ function fixWidth(){
     wSlider.disabled = !wSlider.disabled;
 }
 
+function togglePreview(){
+    updateOnSlide = !updateOnSlide;
+}
+
 // handle sliders
 
 var hSlider = document.getElementById("hSlider");
@@ -147,7 +171,9 @@ hSlider.oninput = function() {
     if (fixWidthToHeight){
         w = h;
     }
-    cutout();
+    if (updateOnSlide) {
+        cutout();
+    }
 }
 
 var wSlider = document.getElementById("wSlider");
@@ -159,7 +185,9 @@ wSlider.disabled = true;
 wSlider.oninput = function() {
     wText.innerHTML = this.value;
     w = parseInt(wSlider.value);
-    cutout();
+    if (updateOnSlide) {
+        cutout();
+    }
 }
 
 
@@ -172,7 +200,9 @@ strideSlider.disabled = true;
 strideSlider.oninput = function(){
     strideText.innerHTML = this.value;
     stride = parseInt(strideSlider.value);
-    cutout();
+    if (updateOnSlide) {
+        cutout();
+    }
 }
 
 var mSlider = document.getElementById("mSlider");
@@ -184,7 +214,9 @@ mSlider.disabled = true;
 mSlider.oninput = function(){
     mText.innerHTML = this.value;
     m = parseInt(mSlider.value);
-    cutout();
+    if (updateOnSlide) {
+        cutout();
+    }
 }
 
 var nSlider = document.getElementById("nSlider");
@@ -196,7 +228,9 @@ nSlider.disabled = true;
 nSlider.oninput = function(){
     nText.innerHTML = this.value;
     n = parseInt(nSlider.value);
-    cutout();
+    if (updateOnSlide) {
+        cutout();
+    }
 }
 
 var x_offsetSlider = document.getElementById("x_offsetSlider");
@@ -208,7 +242,9 @@ x_offsetSlider.disabled = true;
 x_offsetSlider.oninput = function(){
     x_offsetText.innerHTML = this.value;
     x_offset = parseInt(x_offsetSlider.value);
-    cutout();
+    if (updateOnSlide) {
+        cutout();
+    }
 }
 
 var y_offsetSlider = document.getElementById("y_offsetSlider");
@@ -220,7 +256,9 @@ y_offsetSlider.disabled = true;
 y_offsetSlider.oninput = function(){
     y_offsetText.innerHTML = this.value;
     y_offset = parseInt(y_offsetSlider.value);
-    cutout();
+    if (updateOnSlide) {
+        cutout();
+    }
 }
 
 
