@@ -1,3 +1,13 @@
 div.socialmedia {
     margin-top: 50px;
 }
+
+span.glyphicon-envelope {
+    font-size: 4.5em;
+}
+
+a.envelope
+{
+   color: #000;
+   text-decoration: none;
+}

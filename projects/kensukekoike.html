@@ -1,0 +1,366 @@
+---
+layout: default
+title: KensukeKoikeScript
+---
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<div class='container'>
+
+    <div class='row'>
+        <h2>KensukeKoikeScript</h2>
+        <p>Quickly generate images in the style of <a href='https://www.kensukekoike.com/'>Kensuke Koike</a>. Original code and inspiration from <a href="https://github.com/jxnl">Jason Liu</a>.</p>
+    </div>
+
+    <div class="row">
+        <div class='col-md-6'>
+
+            <input type="file" id="imageLoader" name="imageLoader"/>
+            <canvas id="originalImage" width="500" height="500"></canvas>
+        </div>
+        <div class='col-md-6'>
+            <canvas id="newImage" width="500" height="500"></canvas>
+        </div>
+
+    </div>
+
+
+    <div class='row'>
+        Live update: <input type="checkbox" id="togglePreview" onclick="togglePreview()" checked>
+    </div>
+
+    <div class="row">
+        <div class='col-md-3'>
+            <div><p>Height=<span  id='hText'></span></p>
+                <input type="range" min="1" max="100" value="10" step="1" class="slider" id="hSlider">
+            </div>
+
+            <div><p>Width=<span  id='wText'></span> -- Fix to height<input type="checkbox" id="fixWidth" onclick="fixWidth()" checked></p>
+                <input type="range" min="1" max="100" value="10" step="1" class="slider" id="wSlider">
+            </div>
+        </div>
+        <div class='col-md-3'>
+            <div><p>Row Stride=<span  id='hstrideText'></span></p>
+                <input type="range" min="0" max="100" value="20" step="1" class="slider" id="hstrideSlider">
+            </div>
+            <div><p>Column Stride=<span  id='wstrideText'></span>  -- Fix to row stride<input type="checkbox" id="fixWidthStride" onclick="fixWidthStride()" checked></p>
+                <input type="range" min="0" max="100" value="20" step="1" class="slider" id="wstrideSlider">
+            </div>
+        </div>
+        <div class='col-md-3'>
+            <div><p>Columns=<span  id='nText'></span></p>
+                <input type="range" min="1" max="50" value="10" step="1" class="slider" id="nSlider">
+            </div>
+            <div><p>Rows=<span  id='mText'></span></p>
+                <input type="range" min="1" max="50" value="10" step="1" class="slider" id="mSlider">
+            </div>
+        </div>
+        <div class='col-md-3'>
+            <div><p>X offset=<span  id='x_offsetText'></span> -- <button id='centerX' type='button' onclick='centerX();'>center</button></p>
+                <input type="range" min="-300" max="300" value="0" step="1" class="slider" id="x_offsetSlider">
+            </div>
+            <div><p>Y offset=<span  id='y_offsetText'></span> -- <button id='centerY' type='button' onclick='centerY();'>center</button></p>
+                <input type="range" min="-300" max="300" value="0" step="1" class="slider" id="y_offsetSlider">
+            </div>
+        </div>
+    </div>
+        <button type='button' onclick='cutout();'>Generate</button>
+
+</div>
+
+<script type="text/javascript">
+
+//https://stackoverflow.com/a/10906961
+
+var updateOnSlide = true;
+
+var imageLoader = document.getElementById('imageLoader');
+    imageLoader.addEventListener('change', handleImage, false);
+var canvas = document.getElementById('originalImage');
+var ctx = canvas.getContext('2d');
+
+var canvas_new = document.getElementById('newImage');
+var ctx_new = canvas_new.getContext('2d');
+
+var originalImageData = null;
+
+var img_height = null,
+    img_width = null;
+
+function handleImage(e){
+    var reader = new FileReader();
+    reader.onload = function(event){
+        var img = new Image();
+        img.onload = function(){
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx_new.clearRect(0, 0, canvas_new.width, canvas_new.height);
+
+            max_size = 500.;
+            height = img.height;
+            width = img.width;
+            frac = 1.
+            if (height > width){
+                if (height > max_size){
+                    frac = height/max_size
+                }
+
+            } else if (width > height){
+                if (width > max_size){
+                    frac = width/max_size
+                }
+            } else { // equal
+                if (height > max_size){
+                    frac = height/max_size
+                }
+            }
+            img_height = height/frac
+            img_width = width/frac
+
+            ctx.drawImage(img, 0, 0, img_width, img_height);
+            img.style.display = 'none';
+            originalImageData = ctx.getImageData(0, 0, img_width, img_height);
+
+            hSlider.disabled = false;
+
+            if (!fixWidthToHeight){
+                wSlider.disabled = false;
+            }
+
+            if (!fixWidthStrideToHeightStride){
+                wstrideSlider.disabled = false;
+            }
+
+            hstrideSlider.disabled = false;
+
+            mSlider.disabled = false;
+            nSlider.disabled = false;
+            x_offsetSlider.disabled = false;
+            y_offsetSlider.disabled = false;
+            document.getElementById("fixWidth").disabled = false;
+            document.getElementById("fixWidthStride").disabled = false;
+
+            document.getElementById('centerX').disabled = false;
+            document.getElementById('centerY').disabled = false;
+
+            loaded = true;
+
+        }
+        img.src = event.target.result;
+    }
+    reader.readAsDataURL(e.target.files[0]);
+}
+
+function centerX(){
+    cutout_width = n*(wstride + w);
+    x_offset = Math.floor((img_width - cutout_width)/2.);
+
+    x_offsetText.innerHTML = x_offset;
+    x_offsetSlider.value = x_offset;
+
+    if (updateOnSlide) {
+        cutout();
+    }
+}
+
+function centerY(){
+    cutout_height = m*(hstride + h);
+    y_offset = Math.floor((img_height - cutout_height)/2.);
+
+    y_offsetText.innerHTML = y_offset;
+    y_offsetSlider.value = y_offset;
+
+    if (updateOnSlide) {
+        cutout();
+    }
+}
+
+//https://gist.github.com/jxnl/bedfa2382ec1d9faa44aee95fda81127
+function cutout(){
+    reset();
+
+    for (var i=0; i<n; i++){
+        for (var j=0; j<m; j++){
+            x_o = x_offset + (w + wstride) * i
+            y_o = y_offset + (h + hstride) * j
+
+            // Copy into new image
+            var pixels = ctx.getImageData(x_o, y_o, w, h);
+            pixeldata = pixels.data;
+
+            ctx_new.putImageData(pixels, w*i, h*j);
+
+            // White out old image
+            for (var pixel = 0; pixel < pixeldata.length; pixel++) {
+                pixeldata[pixel] = 255;
+            }
+
+            ctx.putImageData(pixels, x_o, y_o);
+
+        }
+    }
+
+}
+
+var loaded = false;
+var fixWidthToHeight = true;
+var fixWidthStrideToHeightStride = true;
+
+document.getElementById('fixWidth').disabled = true;
+document.getElementById('fixWidthStride').disabled = true;
+
+document.getElementById('centerY').disabled = true;
+document.getElementById('centerX').disabled = true;
+
+function fixWidth(){
+    w = h;
+
+    fixWidthToHeight = !fixWidthToHeight;
+    wSlider.disabled = !wSlider.disabled;
+}
+
+function fixWidthStride(){
+    wstride = hstride;
+
+    fixWidthStrideToHeightStride = !fixWidthStrideToHeightStride;
+    wstrideSlider.disabled = !wstrideSlider.disabled;
+}
+
+function togglePreview(){
+    updateOnSlide = !updateOnSlide;
+}
+
+// handle sliders
+
+var hSlider = document.getElementById("hSlider");
+var hText = document.getElementById("hText");
+hText.innerHTML = hSlider.value;
+var h = parseInt(hSlider.value);
+hSlider.disabled = true;
+
+hSlider.oninput = function() {
+    hText.innerHTML = this.value;
+    h = parseInt(hSlider.value);
+    if (fixWidthToHeight){
+        w = h;
+        wText.innerHTML = this.value;
+        wSlider.value = this.value;
+    }
+    if (updateOnSlide) {
+        cutout();
+    }
+}
+
+var wSlider = document.getElementById("wSlider");
+var wText = document.getElementById("wText");
+wText.innerHTML = wSlider.value;
+var w = parseInt(wSlider.value);
+wSlider.disabled = true;
+
+wSlider.oninput = function() {
+    wText.innerHTML = this.value;
+    w = parseInt(wSlider.value);
+    if (updateOnSlide) {
+        cutout();
+    }
+}
+
+var wstrideSlider = document.getElementById("wstrideSlider");
+var wstrideText = document.getElementById("wstrideText");
+wstrideText.innerHTML = wstrideSlider.value;
+var wstride = parseInt(wstrideSlider.value);
+wstrideSlider.disabled = true;
+
+wstrideSlider.oninput = function(){
+    wstrideText.innerHTML = this.value;
+    wstride = parseInt(wstrideSlider.value);
+    if (updateOnSlide) {
+        cutout();
+    }
+}
+
+var hstrideSlider = document.getElementById("hstrideSlider");
+var hstrideText = document.getElementById("hstrideText");
+hstrideText.innerHTML = hstrideSlider.value;
+var hstride = parseInt(hstrideSlider.value);
+hstrideSlider.disabled = true;
+
+hstrideSlider.oninput = function(){
+    hstrideText.innerHTML = this.value;
+    hstride = parseInt(hstrideSlider.value);
+
+    if (fixWidthStrideToHeightStride){
+        wstride = hstride;
+        wstrideText.innerHTML = this.value;
+        wstrideSlider.value = this.value;
+    }
+
+    if (updateOnSlide) {
+        cutout();
+    }
+}
+
+var mSlider = document.getElementById("mSlider");
+var mText = document.getElementById("mText");
+mText.innerHTML = mSlider.value;
+var m = parseInt(mSlider.value);
+mSlider.disabled = true;
+
+mSlider.oninput = function(){
+    mText.innerHTML = this.value;
+    m = parseInt(mSlider.value);
+    if (updateOnSlide) {
+        cutout();
+    }
+}
+
+var nSlider = document.getElementById("nSlider");
+var nText = document.getElementById("nText");
+nText.innerHTML = nSlider.value;
+var n = parseInt(nSlider.value);
+nSlider.disabled = true;
+
+nSlider.oninput = function(){
+    nText.innerHTML = this.value;
+    n = parseInt(nSlider.value);
+    if (updateOnSlide) {
+        cutout();
+    }
+}
+
+var x_offsetSlider = document.getElementById("x_offsetSlider");
+var x_offsetText = document.getElementById("x_offsetText");
+x_offsetText.innerHTML = x_offsetSlider.value;
+var x_offset = parseInt(x_offsetSlider.value);
+x_offsetSlider.disabled = true;
+
+x_offsetSlider.oninput = function(){
+    x_offsetText.innerHTML = this.value;
+    x_offset = parseInt(x_offsetSlider.value);
+    if (updateOnSlide) {
+        cutout();
+    }
+}
+
+var y_offsetSlider = document.getElementById("y_offsetSlider");
+var y_offsetText = document.getElementById("y_offsetText");
+y_offsetText.innerHTML = y_offsetSlider.value;
+var y_offset = parseInt(y_offsetSlider.value);
+y_offsetSlider.disabled = true;
+
+y_offsetSlider.oninput = function(){
+    y_offsetText.innerHTML = this.value;
+    y_offset = parseInt(y_offsetSlider.value);
+    if (updateOnSlide) {
+        cutout();
+    }
+}
+
+
+function reset(){
+    ctx.putImageData(originalImageData, 0, 0);
+    ctx_new.clearRect(0, 0, canvas_new.width, canvas_new.height);
+}
+
+</script>

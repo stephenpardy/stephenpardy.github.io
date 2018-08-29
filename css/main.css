@@ -94,6 +94,16 @@ html {
   20px;
 }
 
+span.glyphicon-envelope {
+    font-size: 5.5em;
+}
+
+a.envelope
+{
+   color: #000;
+   text-decoration: none;
+}
+
 nav ul, footer ul {
     font-family:'Helvetica', 'Arial', 'Sans-Serif';
     padding: 0px;
