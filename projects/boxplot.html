@@ -62,7 +62,7 @@ title: Boxplots
     <div class="row">
       <div class="col-md-8">
       <button type = "button" class = "btn btn-secondary"
-        onclick="$('button').removeClass('btn-primary'); $(this).addClass('btn-primary'); setupNormal()">Normal</button>
+        onclick="$('button').removeClass('btn-primary'); $(this).addClass('btn-primary'); setupRegular()">Regular</button>
       <button type = "button" class = "btn btn-secondary"
         onclick="$('button').removeClass('btn-primary'); $(this).addClass('btn-primary'); setupPathological()">Pathological</button>
       <button type = "button" class = "btn btn-secondary btn-primary"
@@ -165,9 +165,9 @@ var drag = d3.behavior.drag()
         })
       .on("drag", dragged)
       .on("dragend", function(){
-      svg.selectAll(".dot").data(data[0])
-          .attr("cy", function(d) { return y(d); });
-        viz.data(data).call(chart.duration(500));
+        svg.selectAll(".dot").data(data[0])
+            .attr("cy", function(d) { return y(d); });
+          viz.data(data).call(chart.duration(500));
       });
 
 function dragged(d) {
@@ -192,14 +192,11 @@ function setup(){
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
       .call(chart);
 
-
   y.domain([-10, 10]);
 
   svg.append("g")
       .attr("class", "y axis")
       .call(yAxis);
-
-
 }
 
 function setupUser(){
@@ -240,16 +237,14 @@ function setupUser(){
 }
 
 
-function setupNormal(){
+function setupRegular(){
 
-  d3.text("../resources/BoxPlots_normal.csv", function(error, data) {
+  d3.text("../resources/BoxPlots_normal.csv", function(error, inputData) {
     if (error) throw error;
 
-    var data = d3.csv.parseRows(data).map(function(row) {
-      return row.map(function(value) {
-        return +value;
-      });
-    });
+    data = [d3.csv.parseRows(inputData).map(function(value) {
+              return +value
+            })];
 
     d3.select("#sliders")
             .classed("off", true);
@@ -257,8 +252,6 @@ function setupNormal(){
     document.getElementById("sliderMu").disabled = true;
     document.getElementById("sliderSigma").disabled = true;
     document.getElementById("sliderN").disabled = true;
-
-    data = [data];
 
     viz.data(data).call(chart.duration(1000));
 
@@ -283,19 +276,16 @@ function setupNormal(){
 
 function setupPathological(){
 
-  d3.text("../resources/BoxPlots_left.csv", function(error, data) {
+  d3.text("../resources/BoxPlots_left.csv", function(error, inputData) {
     if (error) throw error;
 
-    var data = d3.csv.parseRows(data).map(function(row) {
-      return row.map(function(value) {
-        return +value;
-      });
-    });
+    data = [d3.csv.parseRows(inputData).map(function(value) {
+              return +value
+            })];
 
     d3.select("#sliders")
             .classed("off", true);
 
-    data = [data];
     document.getElementById("sliderMu").disabled = true;
     document.getElementById("sliderSigma").disabled = true;
     document.getElementById("sliderN").disabled = true;
@@ -317,8 +307,8 @@ function setupPathological(){
         .attr("cx", function(d) { return randX(); })
         .attr("cy", function(d) { return y(d); })
         .call(drag);
-
   });
+
 }
 
 setup();
