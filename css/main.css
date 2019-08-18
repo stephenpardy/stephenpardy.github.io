@@ -146,3 +146,9 @@ ul.posts li {
 .top-buffer { margin-top:20px; }
 
 .bottom-buffer { margin-bottom:50px; }
+
+img.headshot {
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+}
