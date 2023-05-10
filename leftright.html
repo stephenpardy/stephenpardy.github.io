@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Left or Right Game</title>
+  <style>
+    body {
+      background-color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    #game-text {
+      font-size: 48px;
+      color: white;
+      text-transform: uppercase;
+    }
+    #score {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      color: white;
+    }
+   #start-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+    }
+    #instructions {
+      max-width: 80%;
+    }
+  </style>
+</head>
+<body>
+  <div id="start-screen">
+    <h1>Left or Right Game</h1>
+    <p id="instructions">
+      Click the left side of the screen or press "Z" when you see "left".<br>
+      Click the right side of the screen or press "/" when you see "right".<br>
+      Be quick! The game speeds up as you score points.
+    </p>
+    <button id="start-button">Start Game</button>
+  </div>
+  <div id="game" style="display: none;">
+    <div id="game-text"></div>
+    <div id="score">Score: 0</div>
+  </div>
+
+  <script>
+    const game = document.getElementById('game');
+    const gameText = document.getElementById('game-text');
+    const scoreElement = document.getElementById('score');
+    const startScreen = document.getElementById('start-screen');
+    const startButton = document.getElementById('start-button');
+    let score = 0;
+    let currentDirection;
+    let interval;
+    let timeout;
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    function getRandomDirection() {
+      return Math.random() < 0.5 ? 'left' : 'right';
+    }
+
+    function updateGameText() {
+      clearTimeout(timeout);
+      gameText.style.color = 'white';
+      currentDirection = getRandomDirection();
+      gameText.textContent = currentDirection;
+      timeout = setTimeout(() => {
+        gameText.style.color = 'red';
+        resetGame();
+      }, intervalTime());
+    }
+
+    function updateScore() {
+      score++;
+      scoreElement.textContent = `Score: ${score}`;
+    }
+
+    function resetGame() {
+      score = 0;
+      scoreElement.textContent = `Score: ${score}`;
+      clearInterval(interval);
+      interval = setInterval(updateGameText, intervalTime());
+    }
+
+    function intervalTime() {
+      return 1000 - (10 * score);
+    }
+
+    function handleKeyPress(event) {
+      if (event.key === 'z' || event.key === '/') {
+        if ((event.key === 'z' && currentDirection === 'left') || (event.key === '/' && currentDirection === 'right')) {
+          clearTimeout(timeout);
+          gameText.style.color = 'green';
+          updateScore();
+          clearInterval(interval);
+          interval = setInterval(updateGameText, intervalTime());
+        } else {
+          gameText.style.color = 'red';
+          resetGame();
+        }
+      }
+    }
+
+    function handleScreenTap(event) {
+      const screenWidth = window.innerWidth;
+      const tappedLeft = event.clientX < screenWidth / 2;
+
+      if ((tappedLeft && currentDirection === 'left') || (!tappedLeft && currentDirection === 'right')) {
+        clearTimeout(timeout);
+        gameText.style.color = 'green';
+        updateScore();
+        clearInterval(interval);
+        interval = setInterval(updateGameText, intervalTime());
+      } else {
+        gameText.style.color = 'red';
+        resetGame();
+      }
+    }
+
+    if (isMobile) {
+      document.addEventListener('click', handleScreenTap);
+    } else {
+      document.addEventListener('keydown', handleKeyPress);
+    }
+
+    function startGame() {
+      startScreen.style.display = 'none';
+      game.style.display = 'block';
+      resetGame();
+    }
+
+    startButton.addEventListener('click', startGame);
+
+    resetGame();
+  </script>
+</body>
+</html>
