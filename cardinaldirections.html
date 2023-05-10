@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Left or Right Game</title>
+  <style>
+    body {
+      background-color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    #game-text {
+      font-size: 48px;
+      color: white;
+      text-transform: uppercase;
+    }
+    #score {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      color: white;
+    }
+   #start-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+    }
+    #instructions {
+      max-width: 80%;
+    }
+  </style>
+</head>
+<body>
+  <div id="start-screen">
+    <h1>Cardinal Direction Game</h1>
+    <p id="instructions">
+      Click the side of the screen corresponding to the correct compas direction.<br>
+      Be quick! The game speeds up as you score points.
+    </p>
+    <button id="start-button">Start Game</button>
+  </div>
+  <div id="game" style="display: none;">
+    <div id="game-text"></div>
+    <div id="score">Score: 0</div>
+  </div>
+
+  <script>
+    const game = document.getElementById('game');
+    const gameText = document.getElementById('game-text');
+    const scoreElement = document.getElementById('score');
+    const startScreen = document.getElementById('start-screen');
+    const startButton = document.getElementById('start-button');
+    let score = 0;
+    let currentDirection;
+    let interval;
+    let timeout;
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    function getRandomDirection() {
+      return Math.random() < 0.5 ? 'left' : 'right';
+    }
+
+    function updateGameText() {
+      clearTimeout(timeout);
+      gameText.style.color = 'white';
+      currentDirection = getRandomDirection();
+      gameText.textContent = currentDirection;
+      timeout = setTimeout(() => {
+        gameText.style.color = 'red';
+        resetGame();
+      }, intervalTime());
+    }
+
+    function updateScore() {
+      score++;
+      scoreElement.textContent = `Score: ${score}`;
+    }
+
+    function resetGame() {
+      score = 0;
+      scoreElement.textContent = `Score: ${score}`;
+      clearInterval(interval);
+      interval = setInterval(updateGameText, intervalTime());
+    }
+
+    function intervalTime() {
+      return 1000 - (10 * score);
+    }
+
+    // 1. Update the game to support four directions
+    function getRandomDirection() {
+      const directions = ['north', 'south', 'east', 'west'];
+      return directions[Math.floor(Math.random() * directions.length)];
+    }
+
+    // 2. Get the user's location data
+    function getLocation() {
+      return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            position => resolve(position),
+            error => reject(error)
+          );
+        } else {
+          reject(new Error('Geolocation not supported'));
+        }
+      });
+    }
+
+    // 3. Calculate the angle between the user's current location and the randomly chosen direction
+    async function calculateAngle(direction) {
+      try {
+        const position = await getLocation();
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        // Calculate the angle based on the direction and the user's location
+        let targetLatitude, targetLongitude;
+
+        switch (direction) {
+          case 'north':
+            targetLatitude = latitude + 0.001;
+            targetLongitude = longitude;
+            break;
+          case 'south':
+            targetLatitude = latitude - 0.001;
+            targetLongitude = longitude;
+            break;
+          case 'east':
+            targetLatitude = latitude;
+            targetLongitude = longitude + 0.001;
+            break;
+          case 'west':
+            targetLatitude = latitude;
+            targetLongitude = longitude - 0.001;
+            break;
+        }
+
+        const angle = Math.atan2(targetLongitude - longitude, targetLatitude - latitude) * 180 / Math.PI;
+
+        return angle;
+      } catch (error) {
+        console.error(error);
+        return null;
+      }
+    }
+
+    function handleTouch(event) {
+      if (!currentDirection) return;
+
+      calculateAngle(currentDirection).then(angle => {
+        if (angle === null) {
+          // Handle error when getting location or calculating angle
+          return;
+        }
+
+        const touchX = event.touches[0].clientX;
+        const touchY = event.touches[0].clientY;
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+
+        // Check if the user tapped the correct side of the screen
+        const correctTap =
+          (touchX < screenWidth / 2 && (angle > 135 || angle < -135)) || // West
+          (touchX > screenWidth / 2 && angle > -45 && angle < 45) || // East
+          (touchY < screenHeight / 2 && angle > 45 && angle < 135) || // North
+          (touchY > screenHeight / 2 && angle > -135 && angle < -45); // South
+
+        if (correctTap) {
+          clearTimeout(timeout);
+          gameText.style.color = 'green';
+          updateScore();
+          clearInterval(interval);
+          interval = setInterval(updateGameText, intervalTime());
+        } else {
+          gameText.style.color = 'red';
+          resetGame();
+        }
+      }).catch(error => {
+        console.error(error);
+      });
+    }
+
+
+    function updateGameText() {
+      clearTimeout(timeout);
+      gameText.style.color = 'white';
+      currentDirection = getRandomDirection();
+      gameText.textContent = currentDirection;
+      timeout = setTimeout(() => {
+        gameText.style.color = 'red';
+        resetGame();
+      }, intervalTime());
+    }
+
+    function startGame() {
+      startScreen.style.display = 'none';
+      game.style.display = 'block';
+      resetGame();
+    }
+
+    startButton.addEventListener('click', startGame);
+    game.addEventListener('touchstart', handleTouch);
+  </script>
+</body>
+</html>
